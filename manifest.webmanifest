@@ -1,0 +1,14 @@
+{
+  "name": "Home Strength Plan",
+  "short_name": "Training",
+  "description": "Tuesday and Friday home strength sessions that adapt to you.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#ECEEE8",
+  "theme_color": "#15171A",
+  "icons": [
+    {"src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable"},
+    {"src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable"}
+  ]
+}
