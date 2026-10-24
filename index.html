@@ -84,6 +84,7 @@ h1,h2,h3{font-family:var(--font-display);font-weight:800;letter-spacing:-0.02em;
 .thumb{width:64px;height:48px;border-radius:10px;overflow:hidden;position:relative;flex-shrink:0;background:var(--soft)}
 .slot{position:absolute;left:3px;top:3px;width:18px;height:18px;border-radius:6px;background:#15171A;color:#C6F432;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;z-index:2}
 .flip{position:relative;overflow:hidden}
+.thumb .flip{position:absolute;inset:0}
 .flip img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;max-width:none}
 .flip .b{animation:flip 2.6s steps(1) infinite}
 .flip.m-start .b{animation:none;opacity:0}
@@ -526,7 +527,7 @@ function viewProgress(){
     var id=exFor(s.id,m),e=EX[s.id&&id],d=dose(s.id,id,false),st=S.slots[s.id],lad=LAD[e.unit],nx=d.step<3?lad[d.step+1]+" "+unitLabel(e):"more weight";
     return '<div style="padding:9px 0'+(i?';border-top:1px solid var(--soft)':'')+'"><div style="display:flex;justify-content:space-between;gap:8px;align-items:baseline"><b>'+s.id+' · '+s.name+'</b><span class="small muted">'+(st.load?"weight +"+st.load+" · ":"")+'step '+(d.step+1)+' of 4</span></div><div class="lvl">'+[0,1,2,3].map(function(k){return '<span class="'+(k<=d.step?"on":"")+'"></span>'}).join("")+'</div><div class="small muted">'+esc(e.name)+' '+doseText(d)+(kgOf(id)?' · '+fmtKg(kgOf(id)):'')+' → next: '+nx+'</div></div>'}).join("")+'</div>';
   h+='<div class="hero" style="gap:6px"><span class="tag">How it gets harder</span><div class="small" style="color:var(--on-hero-muted)">Two full sessions in a row that didn\'t feel too hard: more reps. At the top of the ladder: more weight, fewer reps. "Too easy" counts double. Two "too hard"s in a row: one step back.</div></div>';
-  h+='<div class="card" style="display:flex;flex-direction:column;gap:10px"><b>Your data</b><div class="small muted">Your sessions are saved on this iPhone, inside the app. Make a backup now and then: if you ever delete the app from your home screen, your progress goes with it.</div><button class="btn btn-line" data-act="export">Save a backup file</button><label class="btn btn-line" for="import-file" style="cursor:pointer">Restore from a backup file</label><input id="import-file" type="file" accept="application/json,.json" hidden><button class="btn btn-line" data-act="reset">Start over from scratch</button></div>';
+  h+='<div class="card" style="display:flex;flex-direction:column;gap:10px"><b>Your data</b><div class="small muted">Your sessions are saved on this iPhone, inside the app. Make a backup now and then: if you ever delete the app from your home screen, your progress goes with it.</div><button class="btn btn-line" data-act="export">Save a backup file</button><label class="btn btn-line" for="import-file" style="cursor:pointer">Restore from a backup file</label><input id="import-file" type="file" accept="application/json,.json" hidden><button class="btn btn-line" data-act="reset">Start over from scratch</button><div class=\"small muted\">App version '+APP_VERSION+'</div></div>';
   return h;
 }
 
@@ -749,7 +750,7 @@ document.addEventListener("click",function(ev){
     case "kgset":setKg(P.items[P.i],parseFloat(v));var kh=document.querySelector(".khint");if(kh)kh.remove();break;
     case "kg":var ik=P.items[P.i];setKg(ik,(ik.curKg||0)+parseFloat(v));break;
     case "feel":refeel(v);P.sess=S.log[S.log.length-1];renderDone();break;
-    case "closedone":P=null;layer.innerHTML="";TAB="today";render();break;
+    case "closedone":P=null;layer.innerHTML="";TAB="today";render();if(updateWaiting)location.reload();break;
   }
 });
 document.addEventListener("toggle",function(ev){var d=ev.target;if(d.matches&&d.matches("details.ex")&&d.open)openEx=d.getAttribute("data-key")},true);
@@ -757,6 +758,22 @@ document.addEventListener("keydown",function(ev){if(ev.key==="Escape"&&layer.que
 document.addEventListener("visibilitychange",function(){if(document.visibilityState==="visible"&&P&&P.phase!=="done"&&navigator.wakeLock){navigator.wakeLock.request("screen").then(function(w){wake=w}).catch(function(){})}});
 
 render();
+var APP_VERSION = "2026.10.24-2";
+var updateWaiting = false;
+function checkForUpdate(){
+  if(!navigator.onLine)return;
+  fetch("version.json?t="+Date.now(),{cache:"no-store"}).then(function(r){return r.ok?r.json():null}).then(function(d){
+    if(!d||!d.v||d.v===APP_VERSION)return;
+    var tried=null;try{tried=localStorage.getItem(KEY+"-reloaded-for")}catch(e){}
+    if(tried===d.v)return;
+    try{localStorage.setItem(KEY+"-reloaded-for",d.v)}catch(e){}
+    if(P&&P.phase!=="done"){updateWaiting=true;return}
+    location.reload();
+  }).catch(function(){});
+}
+document.addEventListener("visibilitychange",function(){if(document.visibilityState==="visible")checkForUpdate()});
+window.addEventListener("pageshow",function(ev){if(ev.persisted)checkForUpdate()});
+setTimeout(checkForUpdate,1500);
 if("serviceWorker" in navigator){window.addEventListener("load",function(){navigator.serviceWorker.register("sw.js").catch(function(){})})}
 try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}catch(e){}
 })();
