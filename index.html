@@ -161,6 +161,13 @@ ol.cues .n{width:22px;height:22px;border-radius:6px;background:var(--soft);font-
 .target .u{font-size:12px;color:var(--on-hero-muted)}
 .player ol.cues .n{background:var(--hero-2)}
 .player ol.cues span:last-child{color:#E2E4DE}
+.wrow{display:flex;align-items:center;gap:8px;background:var(--hero-2);border-radius:16px;padding:6px 6px 6px 14px}
+.wrow label{font-size:13px;font-weight:700;color:var(--on-hero-muted);margin-right:auto}
+.wrow button{width:44px;height:44px;border-radius:12px;border:0;background:var(--hero);color:var(--on-hero);font-size:22px;font-weight:700;line-height:1}
+.kgbox{display:flex;align-items:baseline;gap:4px}
+.kgbox input{width:64px;height:44px;border:0;border-radius:10px;background:var(--hero);color:var(--on-hero);font:inherit;font-family:var(--font-display);font-size:22px;font-weight:800;text-align:center;font-variant-numeric:tabular-nums}
+.kgbox input::placeholder{color:var(--on-hero-muted);font-size:14px;font-weight:600;font-family:var(--font-body)}
+.kgbox span{font-size:13px;color:var(--on-hero-muted)}
 .linkbtn{background:none;border:0;color:var(--accent);font-weight:700;font-size:13px;text-decoration:underline;min-height:44px;padding:0;align-self:flex-start}
 .ctrl{display:flex;gap:10px;margin-top:auto}
 .iconbtn{width:64px;min-height:60px;border-radius:18px;border:0;background:var(--hero-2);display:flex;align-items:center;justify-content:center;color:var(--on-hero)}
@@ -257,12 +264,13 @@ function mmss(sec){sec=Math.max(0,Math.round(sec));return Math.floor(sec/60)+":"
 var KEY = "home-strength-plan-v1";
 function fresh(){
   var slots={};SLOTS.forEach(function(s){slots[s.id]={step:0,load:0,streak:0,hard:0}});
-  return {v:1,startedAt:today(),log:[],slots:slots,swaps:{},prefs:{photo:"auto"}};
+  return {v:1,startedAt:today(),log:[],slots:slots,swaps:{},weights:{},prefs:{photo:"auto"}};
 }
 var S = fresh();
 var storeMode = "local";
 var dbRef = null, saveTimer = null;
 try{var raw=localStorage.getItem(KEY);if(raw){var p=JSON.parse(raw);if(p&&p.v===1)S=p}}catch(e){}
+if(!S.weights)S.weights={};
 
 function save(){
   try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}
@@ -312,7 +320,12 @@ function doseText(d,sets){
   var s=(sets||SETS)+" × "+d.target+(d.unit==="sec"?" s":d.unit==="side"?" "+d.label:"");
   return s;
 }
+function fmtKg(k){return (Math.round(k*10)/10).toString().replace(".",",")+" kg"}
+function kgOf(exId){return S.weights&&S.weights[exId]>0?S.weights[exId]:0}
+function kgStep(slot){return (slot==="A"||slot==="C")?2:1}
+function kgHistory(exId){var out=[];S.log.forEach(function(s){(s.items||[]).forEach(function(it){if(it.ex===exId&&it.kg&&it.kg.length){var m=Math.max.apply(null,it.kg);if(m>0)out.push({date:s.date,kg:m})}})});return out}
 function loadText(slot,exId){
+  if(kgOf(exId))return " · "+fmtKg(kgOf(exId));
   var l=S.slots[slot].load,g=EX[exId].gear.toLowerCase();if(!l)return "";
   if(g.indexOf("backpack")>=0)return " · +"+(l*2)+" books";
   if(g.indexOf("bag")>=0)return " · fuller bags";
@@ -358,7 +371,7 @@ function timeline(from,to){
 
 /* Progression after a session */
 function applyProgression(sess,feel){
-  var changes=[],before=JSON.parse(JSON.stringify(S.slots));
+  var changes=[],before={slots:JSON.parse(JSON.stringify(S.slots)),weights:JSON.parse(JSON.stringify(S.weights||{}))};
   if(sess.reentry){SLOTS.forEach(function(s){var st=S.slots[s.id];if(st.step>0)st.step--;st.streak=0});changes.push({t:"Welcome back",d:"Everything was one step easier today. You build back up from here."})}
   if(sess.short||sess.partial){
     changes.push({t:sess.short?"Short version counted":"Partial session counted",d:"It counts as a session. Reps only go up after full sessions."});
@@ -373,7 +386,7 @@ function applyProgression(sess,feel){
         if(st.streak>=2){
           st.streak=0;
           if(st.step<3){st.step++;changes.push({t:e.name+" gets harder",d:"Next time "+SETS+" × "+lad[st.step]+" "+unitLabel(e)+"."})}
-          else{st.load++;st.step=1;changes.push({t:e.name+": add weight",d:loadAdvice(e)+" Reps go back to "+lad[1]+"."})}
+          else{st.load++;st.step=1;var w=kgOf(it.ex);if(w){S.weights[it.ex]=w+kgStep(it.slot);changes.push({t:e.name+": more weight",d:"Go to "+fmtKg(S.weights[it.ex])+" next time. Reps go back to "+lad[1]+"."})}else changes.push({t:e.name+": add weight",d:loadAdvice(e)+" Reps go back to "+lad[1]+"."})}
         }
       }
     });
@@ -390,7 +403,7 @@ function applyProgression(sess,feel){
 function loadAdvice(e){var g=e.gear.toLowerCase();if(g.indexOf("backpack")>=0)return "Put 2 more books in the backpack.";if(g.indexOf("bag")>=0)return "Fill the bags a bit more.";if(g.indexOf("book")>=0)return "Use a heavier book.";return "Go slower: 3 seconds down on every rep."}
 function refeel(feel){
   var sess=S.log[S.log.length-1];if(!sess||!sess.before)return;
-  S.slots=JSON.parse(JSON.stringify(sess.before));
+  if(sess.before.slots){S.slots=JSON.parse(JSON.stringify(sess.before.slots));S.weights=JSON.parse(JSON.stringify(sess.before.weights||{}))}else S.slots=JSON.parse(JSON.stringify(sess.before));
   applyProgression(sess,feel);save();
 }
 
@@ -507,7 +520,7 @@ function viewProgress(){
     '</div><div class="small muted" style="margin-top:10px">'+(due?done+' of '+due+' so far. A session you catch up on later counts as done.':'Your training days fill in here as you go.')+'</div></div>';
   h+='<div class="section-h"><span class="eyebrow">Where each exercise is at</span></div><div class="card" style="padding:4px 16px">'+SLOTS.map(function(s,i){
     var id=exFor(s.id,m),e=EX[s.id&&id],d=dose(s.id,id,false),st=S.slots[s.id],lad=LAD[e.unit],nx=d.step<3?lad[d.step+1]+" "+unitLabel(e):"more weight";
-    return '<div style="padding:9px 0'+(i?';border-top:1px solid var(--soft)':'')+'"><div style="display:flex;justify-content:space-between;gap:8px;align-items:baseline"><b>'+s.id+' · '+s.name+'</b><span class="small muted">'+(st.load?"weight +"+st.load+" · ":"")+'step '+(d.step+1)+' of 4</span></div><div class="lvl">'+[0,1,2,3].map(function(k){return '<span class="'+(k<=d.step?"on":"")+'"></span>'}).join("")+'</div><div class="small muted">'+esc(e.name)+' '+doseText(d)+' → next: '+nx+'</div></div>'}).join("")+'</div>';
+    return '<div style="padding:9px 0'+(i?';border-top:1px solid var(--soft)':'')+'"><div style="display:flex;justify-content:space-between;gap:8px;align-items:baseline"><b>'+s.id+' · '+s.name+'</b><span class="small muted">'+(st.load?"weight +"+st.load+" · ":"")+'step '+(d.step+1)+' of 4</span></div><div class="lvl">'+[0,1,2,3].map(function(k){return '<span class="'+(k<=d.step?"on":"")+'"></span>'}).join("")+'</div><div class="small muted">'+esc(e.name)+' '+doseText(d)+(kgOf(id)?' · '+fmtKg(kgOf(id)):'')+' → next: '+nx+'</div></div>'}).join("")+'</div>';
   h+='<div class="hero" style="gap:6px"><span class="tag">How it gets harder</span><div class="small" style="color:var(--on-hero-muted)">Two full sessions in a row that didn\'t feel too hard: more reps. At the top of the ladder: more weight, fewer reps. "Too easy" counts double. Two "too hard"s in a row: one step back.</div></div>';
   h+='<div class="card" style="display:flex;flex-direction:column;gap:10px"><b>Your data</b><div class="small muted">Your sessions are saved on this iPhone, inside the app. Make a backup now and then: if you ever delete the app from your home screen, your progress goes with it.</div><button class="btn btn-line" data-act="export">Save a backup file</button><label class="btn btn-line" for="import-file" style="cursor:pointer">Restore from a backup file</label><input id="import-file" type="file" accept="application/json,.json" hidden><button class="btn btn-line" data-act="reset">Start over from scratch</button></div>';
   return h;
@@ -523,7 +536,7 @@ function viewExercises(){
     pool(s.id).forEach(function(id){
       var e=EX[id],ri=ROT[s.id].indexOf(id),tag=id===cur?'<span class="badge">This month</span>':ri>=0?'<span class="small muted">Month '+monthsFor(s.id,ri)+'</span>':'<span class="small muted">Swap option</span>';
       h+='<details class="ex"'+(openEx===s.id+id?' open':'')+' data-key="'+s.id+id+'"><summary><div class="thumb">'+photo(e.photo,"","auto")+'</div><div style="flex:1;min-width:0"><div style="font-weight:700">'+esc(e.name)+'</div><div class="small muted">'+esc(e.gear)+'</div></div>'+tag+'</summary><div class="body">'+
-        photo(e.photo,"photo",S.prefs.photo,e.note?'<span class="pnote">'+esc(e.note)+'</span>':'')+
+        photo(e.photo,"photo",S.prefs.photo,e.note?'<span class="pnote">'+esc(e.note)+'</span>':'')+kgHistoryHtml(id)+
         '<ol class="cues">'+e.cues.map(function(c,i){return '<li><span class="n">'+(i+1)+'</span><span>'+esc(c)+'</span></li>'}).join("")+'</ol>'+
         (id!==cur?'<button class="btn btn-line" data-act="useex" data-v="'+s.id+'" data-x="'+id+'">Use this for '+s.name.toLowerCase()+' in month '+m+'</button>':'')+
       '</div></details>';
@@ -533,6 +546,11 @@ function viewExercises(){
   h+='<div class="card small muted"><b style="color:var(--ink)">Left out: these need a gym or have no photo</b><br>Back squat, leg press, deadlift, bench press, incline bench press, lat pulldown, machine row, lateral lunge, staggered and single-leg RDL, single-arm overhead carry, plank pull-through.</div>';
   h+='<div class="small muted">Photos: free-exercise-db (public domain).</div>';
   return h;
+}
+function kgHistoryHtml(id){
+  var h=kgHistory(id);if(!h.length)return "";
+  var last=h.slice(-6);
+  return '<div class="card" style="background:var(--soft);padding:10px 12px"><div class="small" style="font-weight:700">Your weights</div><div style="display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:4px;font-variant-numeric:tabular-nums">'+last.map(function(x,i){return '<span class="small"><span class="muted">'+short(x.date)+'</span> <b>'+fmtKg(x.kg)+'</b></span>'}).join("")+'</div></div>';
 }
 function monthsFor(slot,ri){var L=ROT[slot].length,a=[];for(var k=ri+1;k<=12&&a.length<2;k+=L)a.push(k);return a.join(", ")+"…"}
 
@@ -560,7 +578,7 @@ var P=null,tick=null,wake=null,actx=null;
 function startSession(mode){
   var re=away()&&mode!=="extra";
   var list=lineup(re),sets=mode==="short"?1:SETS;
-  P={mode:mode,reentry:re,sets:sets,items:list.map(function(it){return {slot:it.slot,ex:it.ex,target:it.dose.target,unit:it.dose.unit,done:0,easier:false}}),
+  P={mode:mode,reentry:re,sets:sets,items:list.map(function(it){return {slot:it.slot,ex:it.ex,target:it.dose.target,unit:it.dose.unit,kg:[],curKg:kgOf(it.ex),done:0,easier:false}}),
      phase:"warm",wi:0,i:0,set:1,phaseStart:Date.now(),phaseLen:WARM[0][1],paused:false,pausedAt:0,elapsed:0,lastTick:Date.now(),timer:false,confirm:false,dur:0};
   try{actx=actx||new (window.AudioContext||window.webkitAudioContext)()}catch(e){}
   try{if(navigator.wakeLock)navigator.wakeLock.request("screen").then(function(w){wake=w}).catch(function(){})}catch(e){}
@@ -587,7 +605,7 @@ function onTick(){
 }
 function toWork(){P.phase="work";P.timer=false;renderPlayer()}
 function setDone(){
-  var it=P.items[P.i];it.done++;P.timer=false;
+  var it=P.items[P.i];it.kg[it.done]=it.curKg||0;it.done++;P.timer=false;
   var last=P.i===P.items.length-1&&P.set>=P.sets;
   if(last){finish(false);return}
   if(P.set<P.sets)P.set++;else{P.i++;P.set=1}
@@ -606,13 +624,20 @@ function finish(early){
   if(early&&ds===0){P=null;layer.innerHTML="";render();toast("Nothing saved: no sets done yet");return}
   var n=S.log.length+1;
   var sess={id:"s"+Date.now(),date:today(),n:n,month:monthOf(n-1),secs:Math.round(P.elapsed),setsDone:ds,setsTotal:totalSets(),short:P.mode==="short",partial:early||ds<totalSets(),reentry:P.reentry,
-    items:P.items.map(function(it){return {slot:it.slot,ex:it.ex,target:it.target,done:it.done,easier:it.easier}})};
+    items:P.items.map(function(it){return {slot:it.slot,ex:it.ex,target:it.target,done:it.done,easier:it.easier,kg:it.kg.slice(0,it.done)}})};
+  sess.items.forEach(function(it){var last=it.kg.length?it.kg[it.kg.length-1]:0;if(last>0)S.weights[it.ex]=last;else if(it.kg.length&&S.weights[it.ex])delete S.weights[it.ex]});
   S.log.push(sess);
   applyProgression(sess,"right");
   save();
   P={phase:"done",sess:sess};
   renderDone();
 }
+function kgRow(it){
+  var v=it.curKg>0?(Math.round(it.curKg*10)/10).toString().replace(".",","):"";
+  var prev=it.kg.length?it.kg[it.kg.length-1]:null;
+  return '<div class="wrow"><label for="kg-input">Weight</label><button type="button" data-act="kg" data-v="-0.5" aria-label="0.5 kg less">−</button><span class="kgbox"><input id="kg-input" inputmode="decimal" autocomplete="off" placeholder="none" value="'+v+'"><span>kg</span></span><button type="button" data-act="kg" data-v="0.5" aria-label="0.5 kg more">+</button></div>';
+}
+function setKg(it,val){it.curKg=Math.max(0,Math.round(val*2)/2);var inp=document.getElementById("kg-input");if(inp)inp.value=it.curKg>0?(Math.round(it.curKg*10)/10).toString().replace(".",","):""}
 function renderPlayer(){
   if(!P)return;
   if(P.phase==="done")return renderDone();
@@ -631,6 +656,7 @@ function renderPlayer(){
     body='<div style="display:flex;flex-direction:column;gap:8px">'+photo(e.photo,"pphoto",mode,'<span class="plabel">'+(mode==="auto"?"Start ⇄ end":mode==="end"?"End position":"Start position")+'</span>'+(e.note?'<span class="pnote">'+esc(e.note)+'</span>':''))+
       '<div class="seg-ctl" role="group" aria-label="Photo">'+[["auto","Flip"],["start","Start"],["end","End"]].map(function(x){return '<button data-act="photo" data-v="'+x[0]+'" aria-pressed="'+(mode===x[0])+'">'+x[1]+'</button>'}).join("")+'</div></div>'+
       '<div class="pname"><div><h2>'+esc(e.name)+'</h2><div class="small" style="color:var(--on-hero-muted);margin-top:3px">'+esc(e.gear)+loadText(it.slot,it.ex)+'</div></div><div class="target"><div class="v">'+(P.phase==="work"&&P.timer?'<span id="p-count">'+mmss(remaining())+'</span>':it.target)+'</div><div class="u">'+unitLabel(e)+'</div></div></div>'+
+      (P.phase==="work"?kgRow(it):'')+
       '<ol class="cues">'+e.cues.map(function(c,i){return '<li><span class="n">'+(i+1)+'</span><span>'+esc(c)+'</span></li>'}).join("")+'</ol>'+
       (P.phase==="work"&&!it.easier?'<button class="linkbtn" data-act="easier">Too hard right now? Do 2 fewer</button>':it.easier&&P.phase==="work"?'<div class="small" style="color:var(--on-hero-muted)">Made easier for this session. That\'s fine.</div>':'');
     if(P.phase==="rest"){
@@ -668,10 +694,15 @@ function exportBackup(){
   if(file&&navigator.canShare&&navigator.canShare({files:[file]})){navigator.share({files:[file],title:"Training backup"}).catch(function(){});return}
   var a=document.createElement("a");a.href=URL.createObjectURL(new Blob([json],{type:"application/json"}));a.download=name;document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(a.href);a.remove()},1000);
 }
+document.addEventListener("input",function(ev){
+  if(ev.target.id!=="kg-input"||!P||!P.items)return;
+  var raw=ev.target.value.replace(",",".").replace(/[^0-9.]/g,""),n=parseFloat(raw);
+  P.items[P.i].curKg=isNaN(n)?0:Math.max(0,Math.min(300,n));
+});
 document.addEventListener("change",function(ev){
   if(ev.target.id!=="import-file"||!ev.target.files[0])return;
   var r=new FileReader();r.onload=function(){
-    try{var d=JSON.parse(r.result);if(!d||d.v!==1||!Array.isArray(d.log)||!d.slots)throw 0;S=d;save();render();toast("Backup restored: "+S.log.length+" sessions")}
+    try{var d=JSON.parse(r.result);if(!d||d.v!==1||!Array.isArray(d.log)||!d.slots)throw 0;S=d;if(!S.weights)S.weights={};save();render();toast("Backup restored: "+S.log.length+" sessions")}
     catch(e){toast("That file isn't a training backup")}
   };r.readAsText(ev.target.files[0]);ev.target.value="";
 });
@@ -703,6 +734,7 @@ document.addEventListener("click",function(ev){
     case "plus":P.phaseLen+=15;break;
     case "easier":var it=P.items[P.i];it.easier=true;it.target=Math.max(it.unit==="sec"?15:3,it.target-(it.unit==="sec"?10:2));renderPlayer();break;
     case "photo":S.prefs.photo=v;save();renderPlayer();break;
+    case "kg":var ik=P.items[P.i];setKg(ik,(ik.curKg||0)+parseFloat(v));break;
     case "feel":refeel(v);P.sess=S.log[S.log.length-1];renderDone();break;
     case "closedone":P=null;layer.innerHTML="";TAB="today";render();break;
   }
