@@ -168,6 +168,9 @@ ol.cues .n{width:22px;height:22px;border-radius:6px;background:var(--soft);font-
 .kgbox input{width:64px;height:44px;border:0;border-radius:10px;background:var(--hero);color:var(--on-hero);font:inherit;font-family:var(--font-display);font-size:22px;font-weight:800;text-align:center;font-variant-numeric:tabular-nums}
 .kgbox input::placeholder{color:var(--on-hero-muted);font-size:14px;font-weight:600;font-family:var(--font-body)}
 .kgbox span{font-size:13px;color:var(--on-hero-muted)}
+.khint{display:flex;gap:10px;align-items:center;font-size:13px;line-height:1.35;color:var(--on-hero-muted);margin-top:-4px}
+.khint b{color:var(--on-hero)}
+.khint button{flex-shrink:0;min-height:44px;border-radius:12px;border:0;padding:0 12px;background:var(--accent);color:var(--accent-ink);font-weight:700;font-size:13px}
 .linkbtn{background:none;border:0;color:var(--accent);font-weight:700;font-size:13px;text-decoration:underline;min-height:44px;padding:0;align-self:flex-start}
 .ctrl{display:flex;gap:10px;margin-top:auto}
 .iconbtn{width:64px;min-height:60px;border-radius:18px;border:0;background:var(--hero-2);display:flex;align-items:center;justify-content:center;color:var(--on-hero)}
@@ -213,27 +216,27 @@ var SLOTS = [
   {id:"D", name:"Pull"}, {id:"E", name:"Core"}, {id:"F", name:"Arms"}
 ];
 var EX = {
-  boxSquat:{name:"Box squat", gear:"Chair + dumbbells", photo:"Dumbbell_Squat_To_A_Bench", unit:"reps", note:"Photo uses a bench: sit down onto a chair.", cues:["Stand in front of a chair, a dumbbell in each hand at your sides","Sit back until you touch the seat and pause for a second","Push through your heels to stand up tall"]},
-  gobletSquat:{name:"Goblet squat", gear:"One dumbbell at your chest", photo:"Sit_Squats", unit:"reps", note:"Photo shows no weight: hold one dumbbell upright against your chest.", cues:["Hold one dumbbell upright against your chest, feet shoulder-width","Sit back and down, chest up, knees pushed out","Push through your heels to stand"]},
+  boxSquat:{name:"Box squat", start:[2,6,"each hand"], gear:"Chair + dumbbells", photo:"Dumbbell_Squat_To_A_Bench", unit:"reps", note:"Photo uses a bench: sit down onto a chair.", cues:["Stand in front of a chair, a dumbbell in each hand at your sides","Sit back until you touch the seat and pause for a second","Push through your heels to stand up tall"]},
+  gobletSquat:{name:"Goblet squat", start:[4,8,"one dumbbell"], gear:"One dumbbell at your chest", photo:"Sit_Squats", unit:"reps", note:"Photo shows no weight: hold one dumbbell upright against your chest.", cues:["Hold one dumbbell upright against your chest, feet shoulder-width","Sit back and down, chest up, knees pushed out","Push through your heels to stand"]},
   bodyweightSquat:{name:"Bodyweight squat", gear:"No equipment", photo:"Bodyweight_Squat", unit:"reps", note:"", cues:["Feet shoulder-width, hands behind your head","Sit back and down as far as is comfortable","Stand up tall and squeeze your glutes"]},
   gluteBridge:{name:"Glute bridge", gear:"No equipment", photo:"Butt_Lift_Bridge", unit:"reps", bend:true, note:"", cues:["Lie on your back, knees bent, feet flat","Push through your heels and lift your hips","Squeeze at the top for a second, lower slowly"]},
-  backpackRdl:{name:"Dumbbell RDL", gear:"Dumbbells", photo:"Stiff-Legged_Dumbbell_Deadlift", unit:"reps", bend:true, note:"", cues:["Soft knees, dumbbells in front of your thighs","Push your hips back, back flat, until you feel your hamstrings","Drive your hips forward to stand up"]},
+  backpackRdl:{name:"Dumbbell RDL", start:[4,8,"each hand"], gear:"Dumbbells", photo:"Stiff-Legged_Dumbbell_Deadlift", unit:"reps", bend:true, note:"", cues:["Soft knees, dumbbells in front of your thighs","Push your hips back, back flat, until you feel your hamstrings","Drive your hips forward to stand up"]},
   chairPushup:{name:"Push-up on a chair", gear:"Chair against a wall", photo:"Incline_Push-Up", unit:"reps", note:"Photo uses a box: put the chair against a wall so it can't slide.", cues:["Hands on the seat, a bit wider than your shoulders","Body in one straight line, squeeze your glutes","Lower your chest to the edge, push back up"]},
-  ohPress:{name:"Overhead press", gear:"Dumbbells", photo:"Standing_Dumbbell_Press", unit:"reps", note:"", cues:["Dumbbells at shoulder height, palms forward","Press straight up until your arms are straight","Lower slowly, ribs down, don't arch your back"]},
-  floorPress:{name:"Floor press", gear:"Dumbbells", photo:"Dumbbell_Floor_Press", unit:"reps", note:"", cues:["Lie on your back, knees bent, dumbbells above your chest","Lower until your upper arms touch the floor","Press up until your arms are straight"]},
+  ohPress:{name:"Overhead press", start:[2,4,"each hand"], gear:"Dumbbells", photo:"Standing_Dumbbell_Press", unit:"reps", note:"", cues:["Dumbbells at shoulder height, palms forward","Press straight up until your arms are straight","Lower slowly, ribs down, don't arch your back"]},
+  floorPress:{name:"Floor press", start:[3,6,"each hand"], gear:"Dumbbells", photo:"Dumbbell_Floor_Press", unit:"reps", note:"", cues:["Lie on your back, knees bent, dumbbells above your chest","Lower until your upper arms touch the floor","Press up until your arms are straight"]},
   pushup:{name:"Push-up", gear:"No equipment", photo:"Pushups", unit:"reps", note:"", cues:["Hands a bit wider than your shoulders","Body in one straight line from head to heels","Lower your chest close to the floor, push back up"]},
-  reverseLunge:{name:"Reverse lunge", gear:"Dumbbells", photo:"Dumbbell_Rear_Lunge", unit:"side", side:"per leg", note:"", cues:["Stand tall, a dumbbell in each hand, step one foot back","Lower until your back knee nearly touches the floor","Push through your front heel to come back up"]},
-  walkingLunge:{name:"Walking lunge", gear:"Dumbbells optional", photo:"Bodyweight_Walking_Lunge", unit:"side", side:"per leg", note:"Photo shows no weight: hold a dumbbell in each hand once it gets easy.", cues:["Big step forward, back knee towards the floor","Front knee stays above your foot","Push off and step straight into the next lunge"]},
+  reverseLunge:{name:"Reverse lunge", start:[2,4,"each hand"], gear:"Dumbbells", photo:"Dumbbell_Rear_Lunge", unit:"side", side:"per leg", note:"", cues:["Stand tall, a dumbbell in each hand, step one foot back","Lower until your back knee nearly touches the floor","Push through your front heel to come back up"]},
+  walkingLunge:{name:"Walking lunge", start:[2,4,"each hand"], gear:"Dumbbells optional", photo:"Bodyweight_Walking_Lunge", unit:"side", side:"per leg", note:"Photo shows no weight: hold a dumbbell in each hand once it gets easy.", cues:["Big step forward, back knee towards the floor","Front knee stays above your foot","Push off and step straight into the next lunge"]},
   stepUp:{name:"Step-up", gear:"Bottom stair or sturdy step", photo:"Step-up_with_Knee_Raise", unit:"side", side:"per leg", note:"Photo adds a knee raise: that part is optional.", cues:["Put your whole foot on the step","Push through that heel to stand up on it","Step down slowly, then switch legs"]},
   slBridge:{name:"Single-leg glute bridge", gear:"No equipment", photo:"Single_Leg_Glute_Bridge", unit:"side", side:"per leg", note:"", cues:["Lie on your back, one foot flat, other leg up","Push through the planted heel and lift your hips","Keep your hips level, lower slowly"]},
-  singleArmRow:{name:"Single-arm row", gear:"Dumbbell + chair", photo:"One-Arm_Dumbbell_Row", unit:"side", side:"per arm", note:"Photo uses a bench: put one knee and one hand on the chair.", cues:["One knee and one hand on the chair, back flat","Pull the dumbbell up to your hip","Lower slowly until your arm is straight"]},
-  threePointRow:{name:"3-point row", gear:"Dumbbell + chair", photo:"One-Arm_Dumbbell_Row", unit:"side", side:"per arm", note:"Photo has a knee on the bench: keep both feet on the floor, one hand on the chair.", cues:["One hand on the chair seat, feet apart, back flat","Pull the dumbbell up to your hip","Lower slowly until your arm is straight"]},
-  bentOverRow:{name:"Bent-over row", gear:"Dumbbells", photo:"Bent_Over_Two-Dumbbell_Row", unit:"reps", note:"", cues:["Hinge forward, back flat, dumbbells hanging","Pull them to your belly button","Lower slowly"]},
-  weightedCrunch:{name:"Weighted crunch", gear:"One dumbbell", photo:"Crunches", unit:"reps", note:"Photo shows no weight: hold one dumbbell on your chest.", cues:["Lie on your back, knees bent, dumbbell on your chest","Curl your shoulders off the floor","Lower slowly, keep your chin off your chest"]},
-  farmersCarry:{name:"Farmers carry", gear:"2 heavy dumbbells", photo:"Farmers_Walk", unit:"sec", note:"Photo uses gym handles: carry your two heaviest dumbbells.", cues:["Pick the dumbbells up with a straight back","Stand tall, shoulders down and back","Walk short, steady steps around the room"]},
+  singleArmRow:{name:"Single-arm row", start:[4,8,"one dumbbell"], gear:"Dumbbell + chair", photo:"One-Arm_Dumbbell_Row", unit:"side", side:"per arm", note:"Photo uses a bench: put one knee and one hand on the chair.", cues:["One knee and one hand on the chair, back flat","Pull the dumbbell up to your hip","Lower slowly until your arm is straight"]},
+  threePointRow:{name:"3-point row", start:[4,8,"one dumbbell"], gear:"Dumbbell + chair", photo:"One-Arm_Dumbbell_Row", unit:"side", side:"per arm", note:"Photo has a knee on the bench: keep both feet on the floor, one hand on the chair.", cues:["One hand on the chair seat, feet apart, back flat","Pull the dumbbell up to your hip","Lower slowly until your arm is straight"]},
+  bentOverRow:{name:"Bent-over row", start:[3,6,"each hand"], gear:"Dumbbells", photo:"Bent_Over_Two-Dumbbell_Row", unit:"reps", note:"", cues:["Hinge forward, back flat, dumbbells hanging","Pull them to your belly button","Lower slowly"]},
+  weightedCrunch:{name:"Weighted crunch", start:[2,5,"one dumbbell"], gear:"One dumbbell", photo:"Crunches", unit:"reps", note:"Photo shows no weight: hold one dumbbell on your chest.", cues:["Lie on your back, knees bent, dumbbell on your chest","Curl your shoulders off the floor","Lower slowly, keep your chin off your chest"]},
+  farmersCarry:{name:"Farmers carry", start:[6,12,"each hand"], gear:"2 heavy dumbbells", photo:"Farmers_Walk", unit:"sec", note:"Photo uses gym handles: carry your two heaviest dumbbells.", cues:["Pick the dumbbells up with a straight back","Stand tall, shoulders down and back","Walk short, steady steps around the room"]},
   deadBug:{name:"Dead bug", gear:"No equipment", photo:"Dead_Bug", unit:"side", side:"per side", note:"", cues:["Lie on your back, arms up, knees above your hips","Lower one arm and the opposite leg slowly","Keep your lower back on the floor, then switch"]},
-  bicepCurl:{name:"Bicep curl", gear:"Dumbbells", photo:"Dumbbell_Bicep_Curl", unit:"reps", note:"", cues:["Stand tall, dumbbells at your sides","Curl them up, elbows stay by your sides","Lower slowly"]},
-  tricepExt:{name:"Tricep extension", gear:"One dumbbell", photo:"Standing_Dumbbell_Triceps_Extension", unit:"reps", note:"", cues:["Hold one dumbbell overhead with both hands","Lower it behind your head, elbows point up","Straighten your arms again"]}
+  bicepCurl:{name:"Bicep curl", start:[2,4,"each hand"], gear:"Dumbbells", photo:"Dumbbell_Bicep_Curl", unit:"reps", note:"", cues:["Stand tall, dumbbells at your sides","Curl them up, elbows stay by your sides","Lower slowly"]},
+  tricepExt:{name:"Tricep extension", start:[3,6,"one dumbbell"], gear:"One dumbbell", photo:"Standing_Dumbbell_Triceps_Extension", unit:"reps", note:"", cues:["Hold one dumbbell overhead with both hands","Lower it behind your head, elbows point up","Straighten your arms again"]}
 };
 var ROT = {A:["boxSquat","gobletSquat"], B:["chairPushup","ohPress","floorPress"], C:["reverseLunge","walkingLunge","stepUp","slBridge"], D:["singleArmRow","threePointRow","bentOverRow"], E:["weightedCrunch","farmersCarry","deadBug"], F:["bicepCurl","tricepExt"]};
 var EXTRA = {A:["bodyweightSquat","gluteBridge","backpackRdl"], B:["pushup"], C:[], D:[], E:[], F:[]};
@@ -537,7 +540,7 @@ function viewExercises(){
     pool(s.id).forEach(function(id){
       var e=EX[id],ri=ROT[s.id].indexOf(id),tag=id===cur?'<span class="badge">This month</span>':ri>=0?'<span class="small muted">Month '+monthsFor(s.id,ri)+'</span>':'<span class="small muted">Swap option</span>';
       h+='<details class="ex"'+(openEx===s.id+id?' open':'')+' data-key="'+s.id+id+'"><summary><div class="thumb">'+photo(e.photo,"","auto")+'</div><div style="flex:1;min-width:0"><div style="font-weight:700">'+esc(e.name)+'</div><div class="small muted">'+esc(e.gear)+'</div></div>'+tag+'</summary><div class="body">'+
-        photo(e.photo,"photo",S.prefs.photo,e.note?'<span class="pnote">'+esc(e.note)+'</span>':'')+kgHistoryHtml(id)+
+        photo(e.photo,"photo",S.prefs.photo,e.note?'<span class="pnote">'+esc(e.note)+'</span>':'')+startHtml(e)+kgHistoryHtml(id)+
         '<ol class="cues">'+e.cues.map(function(c,i){return '<li><span class="n">'+(i+1)+'</span><span>'+esc(c)+'</span></li>'}).join("")+'</ol>'+
         (id!==cur?'<button class="btn btn-line" data-act="useex" data-v="'+s.id+'" data-x="'+id+'">Use this for '+s.name.toLowerCase()+' in month '+m+'</button>':'')+
       '</div></details>';
@@ -547,6 +550,10 @@ function viewExercises(){
   h+='<div class="card small muted"><b style="color:var(--ink)">Left out: these need a gym or have no photo</b><br>Back squat, leg press, deadlift, bench press, incline bench press, lat pulldown, machine row, lateral lunge, staggered and single-leg RDL, single-arm overhead carry, plank pull-through.</div>';
   h+='<div class="small muted">Photos: free-exercise-db (public domain).</div>';
   return h;
+}
+function startHtml(e){
+  if(!e.start)return "";
+  return '<div class="small muted"><b style="color:var(--ink)">Starting weight:</b> '+e.start[0]+'–'+e.start[1]+' kg, '+e.start[2]+'. Choose the weight where the last 2–3 reps of each set feel hard but your form stays clean. Can you easily do 5 more? Go heavier. Is your form slipping? Go lighter.</div>';
 }
 function kgHistoryHtml(id){
   var h=kgHistory(id);if(!h.length)return "";
@@ -636,7 +643,11 @@ function finish(early){
 function kgRow(it){
   var v=it.curKg>0?(Math.round(it.curKg*10)/10).toString().replace(".",","):"";
   var prev=it.kg.length?it.kg[it.kg.length-1]:null;
-  return '<div class="wrow"><label for="kg-input">Weight</label><button type="button" data-act="kg" data-v="-0.5" aria-label="0.5 kg less">−</button><span class="kgbox"><input id="kg-input" inputmode="decimal" autocomplete="off" placeholder="none" value="'+v+'"><span>kg</span></span><button type="button" data-act="kg" data-v="0.5" aria-label="0.5 kg more">+</button></div>';
+  return '<div class="wrow"><label for="kg-input">Weight</label><button type="button" data-act="kg" data-v="-0.5" aria-label="0.5 kg less">−</button><span class="kgbox"><input id="kg-input" inputmode="decimal" autocomplete="off" placeholder="none" value="'+v+'"><span>kg</span></span><button type="button" data-act="kg" data-v="0.5" aria-label="0.5 kg more">+</button></div>'+startHint(it);
+}
+function startHint(it){
+  var e=EX[it.ex];if(!e.start||it.curKg>0||kgOf(it.ex)||kgHistory(it.ex).length)return "";
+  return '<div class="khint"><div><b>First time with weight?</b> Start around '+e.start[0]+'–'+e.start[1]+' kg, '+e.start[2]+'. Pick a weight where the last 2–3 reps feel hard but your form stays clean.</div><button type="button" data-act="kgset" data-v="'+e.start[0]+'">Use '+e.start[0]+' kg</button></div>';
 }
 function setKg(it,val){it.curKg=Math.max(0,Math.round(val*2)/2);var inp=document.getElementById("kg-input");if(inp)inp.value=it.curKg>0?(Math.round(it.curKg*10)/10).toString().replace(".",","):""}
 function renderPlayer(){
@@ -735,6 +746,7 @@ document.addEventListener("click",function(ev){
     case "plus":P.phaseLen+=15;break;
     case "easier":var it=P.items[P.i];it.easier=true;it.target=Math.max(it.unit==="sec"?15:3,it.target-(it.unit==="sec"?10:2));renderPlayer();break;
     case "photo":S.prefs.photo=v;save();renderPlayer();break;
+    case "kgset":setKg(P.items[P.i],parseFloat(v));var kh=document.querySelector(".khint");if(kh)kh.remove();break;
     case "kg":var ik=P.items[P.i];setKg(ik,(ik.curKg||0)+parseFloat(v));break;
     case "feel":refeel(v);P.sess=S.log[S.log.length-1];renderDone();break;
     case "closedone":P=null;layer.innerHTML="";TAB="today";render();break;
