@@ -314,9 +314,12 @@ function exFor(slot,month){
 function pool(slot){return ROT[slot].concat(EXTRA[slot])}
 function lastDate(){return S.log.length?S.log[S.log.length-1].date:null}
 function away(){var l=lastDate();return l?daysBetween(l,today())>10:false}
+var FIXED = {reps:10, side:8, sec:40};
+function weighted(exId){return !!(EX[exId]&&EX[exId].start)}
 function dose(slot,exId,reentry){
   var e=EX[exId],st=S.slots[slot],lad=LAD[e.unit];
   var step=Math.max(0,Math.min(3,st.step-(reentry?1:0)));
+  if(weighted(exId))return {target:FIXED[e.unit],step:step,load:st.load,unit:e.unit,label:unitLabel(e),fixed:true};
   return {target:lad[step],step:step,load:st.load,unit:e.unit,label:unitLabel(e)};
 }
 function unitLabel(e){return e.unit==="sec"?"seconds":e.unit==="side"?e.side:"reps"}
@@ -379,10 +382,21 @@ function applyProgression(sess,feel){
   var changes=[],before={slots:JSON.parse(JSON.stringify(S.slots)),weights:JSON.parse(JSON.stringify(S.weights||{}))};
   if(sess.reentry){SLOTS.forEach(function(s){var st=S.slots[s.id];if(st.step>0)st.step--;st.streak=0});changes.push({t:"Welcome back",d:"Everything was one step easier today. You build back up from here."})}
   if(sess.short||sess.partial){
-    changes.push({t:sess.short?"Short version counted":"Partial session counted",d:"It counts as a session. Reps only go up after full sessions."});
+    changes.push({t:sess.short?"Short version counted":"Partial session counted",d:"It counts as a session. Weights and reps only go up after full sessions."});
   }else{
     sess.items.forEach(function(it){
-      var st=S.slots[it.slot],e=EX[it.ex],lad=LAD[e.unit];
+      var st=S.slots[it.slot],e=EX[it.ex],lad=LAD[e.unit],w=kgOf(it.ex),usedKg=!!e.start;
+      if(usedKg){
+        var fx=FIXED[e.unit]+" "+unitLabel(e);
+        if(feel==="hard"||it.easier){
+          st.streak=0;st.hard++;
+          if(st.hard>=2){st.hard=0;var down=Math.max(0.5,w-kgStep(it.slot));if(w&&down<w){S.weights[it.ex]=down;changes.push({t:e.name+" eases off",d:"Two tough sessions in a row: go back to "+fmtKg(down)+". Reps stay at "+fx+"."})}}
+        }else{
+          st.hard=0;st.streak+=(feel==="easy"?2:1);
+          if(st.streak>=2){st.streak=0;if(w){S.weights[it.ex]=w+kgStep(it.slot);changes.push({t:e.name+": more weight",d:"Go to "+fmtKg(S.weights[it.ex])+" next time. Reps stay at "+fx+"."})}else changes.push({t:e.name+": time for weight",d:"Start with "+e.start[0]+" kg, "+e.start[2]+", and log it. Reps stay at "+fx+"."})}
+        }
+        return;
+      }
       if(feel==="hard"||it.easier){
         st.streak=0;st.hard++;
         if(st.hard>=2){st.hard=0;if(st.step>0){st.step--;changes.push({t:e.name+" eases off",d:"Two tough sessions in a row: next time "+lad[st.step]+" "+unitLabel(e)+"."})}}
@@ -524,9 +538,9 @@ function viewProgress(){
     tl.map(function(x){var c=x.state==="done"?"on":(x.state==="today"||x.state==="open")?"now":"";var st=x.state==="missed"?' style="background:transparent;border:1.5px dashed var(--faint)"':x.state==="planned"?' style="opacity:.45"':'';return '<span class="dot '+c+'"'+st+' title="'+short(x.date)+': '+x.state+'"></span>'}).join("")+
     '</div><div class="small muted" style="margin-top:10px">'+(due?done+' of '+due+' so far. A session you catch up on later counts as done.':'Your training days fill in here as you go.')+'</div></div>';
   h+='<div class="section-h"><span class="eyebrow">Where each exercise is at</span></div><div class="card" style="padding:4px 16px">'+SLOTS.map(function(s,i){
-    var id=exFor(s.id,m),e=EX[s.id&&id],d=dose(s.id,id,false),st=S.slots[s.id],lad=LAD[e.unit],nx=d.step<3?lad[d.step+1]+" "+unitLabel(e):"more weight";
-    return '<div style="padding:9px 0'+(i?';border-top:1px solid var(--soft)':'')+'"><div style="display:flex;justify-content:space-between;gap:8px;align-items:baseline"><b>'+s.id+' · '+s.name+'</b><span class="small muted">'+(st.load?"weight +"+st.load+" · ":"")+'step '+(d.step+1)+' of 4</span></div><div class="lvl">'+[0,1,2,3].map(function(k){return '<span class="'+(k<=d.step?"on":"")+'"></span>'}).join("")+'</div><div class="small muted">'+esc(e.name)+' '+doseText(d)+(kgOf(id)?' · '+fmtKg(kgOf(id)):'')+' → next: '+nx+'</div></div>'}).join("")+'</div>';
-  h+='<div class="hero" style="gap:6px"><span class="tag">How it gets harder</span><div class="small" style="color:var(--on-hero-muted)">Two full sessions in a row that didn\'t feel too hard: more reps. At the top of the ladder: more weight, fewer reps. "Too easy" counts double. Two "too hard"s in a row: one step back.</div></div>';
+    var id=exFor(s.id,m),e=EX[s.id&&id],d=dose(s.id,id,false),st=S.slots[s.id],lad=LAD[e.unit],nx=d.fixed?(kgOf(id)?fmtKg(kgOf(id)+kgStep(s.id)):"log a weight"):d.step<3?lad[d.step+1]+" "+unitLabel(e):"more weight";
+    return '<div style="padding:9px 0'+(i?';border-top:1px solid var(--soft)':'')+'"><div style="display:flex;justify-content:space-between;gap:8px;align-items:baseline"><b>'+s.id+' · '+s.name+'</b><span class="small muted">'+(d.fixed?(kgOf(id)?fmtKg(kgOf(id)):'no weight logged')+' · reps stay fixed':(st.load?"weight +"+st.load+" · ":"")+'step '+(d.step+1)+' of 4')+'</span></div>'+(d.fixed?'':'<div class="lvl">'+[0,1,2,3].map(function(k){return '<span class="'+(k<=d.step?"on":"")+'"></span>'}).join("")+'</div>')+'<div class="small muted">'+esc(e.name)+' '+doseText(d)+(kgOf(id)?' · '+fmtKg(kgOf(id)):'')+' → next: '+nx+'</div></div>'}).join("")+'</div>';
+  h+='<div class="hero" style="gap:6px"><span class="tag">How it gets harder</span><div class="small" style="color:var(--on-hero-muted)">Two full sessions in a row that didn\'t feel too hard: with dumbbells, the weight goes up (2 kg for legs, 1 kg for the rest) and the reps stay the same. Without weight: more reps. "Too easy" counts double. Two "too hard"s in a row: one step back.</div></div>';
   h+='<div class="card" style="display:flex;flex-direction:column;gap:10px"><b>Your data</b><div class="small muted">Your sessions are saved on this iPhone, inside the app. Make a backup now and then: if you ever delete the app from your home screen, your progress goes with it.</div><button class="btn btn-line" data-act="export">Save a backup file</button><label class="btn btn-line" for="import-file" style="cursor:pointer">Restore from a backup file</label><input id="import-file" type="file" accept="application/json,.json" hidden><button class="btn btn-line" data-act="reset">Start over from scratch</button><div class=\"small muted\">App version '+APP_VERSION+'</div></div>';
   return h;
 }
@@ -587,7 +601,7 @@ var P=null,tick=null,wake=null,actx=null;
 function startSession(mode){
   var re=away()&&mode!=="extra";
   var list=lineup(re),sets=mode==="short"?1:SETS;
-  P={mode:mode,reentry:re,sets:sets,items:list.map(function(it){return {slot:it.slot,ex:it.ex,target:it.dose.target,unit:it.dose.unit,kg:[],curKg:kgOf(it.ex),done:0,easier:false}}),
+  P={mode:mode,reentry:re,sets:sets,items:list.map(function(it){return {slot:it.slot,ex:it.ex,target:it.dose.target,unit:it.dose.unit,kg:[],curKg:(re&&weighted(it.ex))?Math.max(0.5,kgOf(it.ex)-kgStep(it.slot)):kgOf(it.ex),done:0,easier:false}}),
      phase:"warm",wi:0,i:0,set:1,phaseStart:Date.now(),phaseLen:WARM[0][1],paused:false,pausedAt:0,elapsed:0,lastTick:Date.now(),timer:false,confirm:false,dur:0};
   try{actx=actx||new (window.AudioContext||window.webkitAudioContext)()}catch(e){}
   try{if(navigator.wakeLock)navigator.wakeLock.request("screen").then(function(w){wake=w}).catch(function(){})}catch(e){}
@@ -758,7 +772,7 @@ document.addEventListener("keydown",function(ev){if(ev.key==="Escape"&&layer.que
 document.addEventListener("visibilitychange",function(){if(document.visibilityState==="visible"&&P&&P.phase!=="done"&&navigator.wakeLock){navigator.wakeLock.request("screen").then(function(w){wake=w}).catch(function(){})}});
 
 render();
-var APP_VERSION = "2026.10.24-2";
+var APP_VERSION = "2026.11.06-1";
 var updateWaiting = false;
 function checkForUpdate(){
   if(!navigator.onLine)return;
