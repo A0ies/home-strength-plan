@@ -341,6 +341,18 @@ var FAM = {
     {name:"Straight-arm plank", gear:"No equipment", photo:"Pushups", note:"Photo shows a push-up: just hold the top position.", cues:["Hands under your shoulders on the floor, arms straight","Body in one straight line","Hold still and breathe"]},
     {name:"Plank with shoulder taps", gear:"No equipment", photo:"Pushups", note:"Photo shows a push-up: hold the top position and tap the opposite shoulder.", cues:["Straight-arm plank, feet a bit wider","Tap one hand to the opposite shoulder, hips stay still","Alternate sides for the whole time"]},
     {name:"Feet-up straight-arm plank", gear:"Couch", photo:"Push-Ups_With_Feet_Elevated", note:"Photo shows a push-up: hold the top position with your feet on the couch.", cues:["Feet on the couch, hands on the floor under your shoulders","Body in one straight line, don't let your hips sag","Hold still and breathe"]}
+  ]},
+  wallSquat:{unit:"reps", start:0, v:[
+    {name:"Wall squat, hands on the wall", gear:"A wall", photo:"Bodyweight_Squat", note:"Photo shows a free squat: face a wall, hands flat on it.", cues:["Face the wall, feet a foot away, hands flat on the wall at shoulder height","Squat down slowly, chest stays close to the wall","Heels stay down, push through them to stand up"]},
+    {name:"Wall squat, feet closer", gear:"A wall", photo:"Bodyweight_Squat", note:"Photo shows a free squat: face a wall, feet a hand-width away.", cues:["Feet a hand-width from the wall, hands flat on it","Sit down between your heels, knees push out","Stand up without leaning away from the wall"]},
+    {name:"Wall squat, toes to the wall", gear:"A wall", photo:"Bodyweight_Squat", note:"Photo shows a free squat: toes against the wall.", cues:["Toes against the wall, hands on the wall above your head","Squat down slowly without your knees or face touching the wall","Ankles pressed into the floor, stand back up"]},
+    {name:"Wall squat, hands free", gear:"A wall", photo:"Bodyweight_Squat", note:"Photo shows a free squat: toes against the wall, arms overhead.", cues:["Toes against the wall, arms straight up, not touching it","Squat as low as you can, chest stays tall","Stand up slowly, heels down the whole time"]}
+  ]},
+  hip9090:{unit:"side", side:"per side", start:0, v:[
+    {name:"90/90 hip switch, hands behind", gear:"Mat", photo:"", cues:["Sit with both knees bent at 90°, one leg in front, one to the side","Hands on the floor behind you, rotate both knees to the other side","Keep your feet on the floor, go slow"]},
+    {name:"90/90 hip switch, fingertips", gear:"Mat", photo:"", cues:["Same 90/90 seat, only your fingertips touch the floor","Sit tall, rotate both knees to the other side","Let your hips do the work, not your hands"]},
+    {name:"90/90 hip switch, hands free", gear:"Mat", photo:"", cues:["Sit tall in the 90/90 seat, hands in front of your chest","Rotate both knees to the other side without your hands","If you fall back, go back to fingertips"]},
+    {name:"90/90 switch with back-knee lift", gear:"Mat", photo:"", cues:["Hands-free 90/90 seat, sit tall","Lift your back knee off the floor for a second","Put it down and switch sides"]}
   ]}
 };
 function isFam(id){return !!FAM[id]}
@@ -362,6 +374,7 @@ EX.kneelingWoodchop={name:"Half-kneeling woodchop", start:[2,5,"one dumbbell, bo
 EX.sitbackPallof={name:"Sit-back to Pallof press", start:[2,5,"one dumbbell, both hands"], gear:"One dumbbell + a cushion", photo:"Pallof_Press", unit:"reps", note:"Photo uses a cable: kneel and hold one dumbbell at your chest with both hands.", cues:["Kneel tall, dumbbell at your chest with both hands","Sit your hips back towards your heels","Come back up tall and press the dumbbell straight out, then pull it back in"]};
 EX.stirPot={name:"Kneeling stir the pot", start:[2,5,"one dumbbell, both hands"], gear:"One dumbbell + a cushion", photo:"", unit:"sec", note:"", cues:["Kneel tall, hold one dumbbell upright in both hands, arms straight in front","Draw slow circles with it, your body stays still","Switch direction halfway"]};
 ROT.E.push("kneelingHalo","rotationalPress","kneelingWoodchop","sitbackPallof","stirPot");
+ROT.A.push("wallSquat");ROT.C.push("hip9090");
 
 var TRAIN_DAYS = [2,5];
 var DOW = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
@@ -953,7 +966,7 @@ document.addEventListener("wheel",function(e){if(e.ctrlKey)e.preventDefault()},{
 var rsz=null;window.addEventListener("resize",function(){clearTimeout(rsz);rsz=setTimeout(function(){if(!P&&!layer.innerHTML)render()},150)});
 
 render();
-var APP_VERSION = "2026.11.19-4";
+var APP_VERSION = "2026.11.19-5";
 var updateWaiting = false;
 function checkForUpdate(){
   if(!navigator.onLine)return;
