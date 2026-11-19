@@ -227,6 +227,8 @@ ol.cues .n{width:20px;height:20px;border-radius:6px;background:var(--soft);font-
 .rest .l{font-size:12.5px;opacity:.88}
 .rest button{border-radius:12px;height:44px;padding:0 14px;font-weight:700;background:#fff;color:#2B45D9}
 .rest .plus{background:rgba(255,255,255,.18);color:#fff}
+.nophoto{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:16px;color:var(--on-hero-muted);font-size:14px}
+.wtag{position:absolute;left:8px;top:8px;z-index:3;font-size:11px;font-weight:700;color:#15171A;background:#C6F432;border-radius:999px;padding:4px 9px}
 .warm{flex:1;min-height:0;border-radius:20px;background:var(--hero-2);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;text-align:center;padding:16px}
 .warm h2{font-size:clamp(26px,4vh,34px)}
 .warm .c{font-family:var(--font-display);font-size:clamp(48px,9vh,72px);font-weight:800;color:var(--accent);font-variant-numeric:tabular-nums}
@@ -263,7 +265,7 @@ ol.cues .n{width:20px;height:20px;border-radius:6px;background:var(--soft);font-
 "use strict";
 
 /* ---------- Photos (free-exercise-db, public domain) ---------- */
-var IMG = {"Bent_Over_Two-Dumbbell_Row": ["img/Bent_Over_Two-Dumbbell_Row_0.jpg", "img/Bent_Over_Two-Dumbbell_Row_1.jpg"], "Bodyweight_Squat": ["img/Bodyweight_Squat_0.jpg", "img/Bodyweight_Squat_1.jpg"], "Bodyweight_Walking_Lunge": ["img/Bodyweight_Walking_Lunge_0.jpg", "img/Bodyweight_Walking_Lunge_1.jpg"], "Butt_Lift_Bridge": ["img/Butt_Lift_Bridge_0.jpg", "img/Butt_Lift_Bridge_1.jpg"], "Crunches": ["img/Crunches_0.jpg", "img/Crunches_1.jpg"], "Dead_Bug": ["img/Dead_Bug_0.jpg", "img/Dead_Bug_1.jpg"], "Dumbbell_Bicep_Curl": ["img/Dumbbell_Bicep_Curl_0.jpg", "img/Dumbbell_Bicep_Curl_1.jpg"], "Dumbbell_Floor_Press": ["img/Dumbbell_Floor_Press_0.jpg", "img/Dumbbell_Floor_Press_1.jpg"], "Dumbbell_Rear_Lunge": ["img/Dumbbell_Rear_Lunge_0.jpg", "img/Dumbbell_Rear_Lunge_1.jpg"], "Dumbbell_Squat_To_A_Bench": ["img/Dumbbell_Squat_To_A_Bench_0.jpg", "img/Dumbbell_Squat_To_A_Bench_1.jpg"], "Farmers_Walk": ["img/Farmers_Walk_0.jpg", "img/Farmers_Walk_1.jpg"], "Incline_Push-Up": ["img/Incline_Push-Up_0.jpg", "img/Incline_Push-Up_1.jpg"], "One-Arm_Dumbbell_Row": ["img/One-Arm_Dumbbell_Row_0.jpg", "img/One-Arm_Dumbbell_Row_1.jpg"], "Pushups": ["img/Pushups_0.jpg", "img/Pushups_1.jpg"], "Single_Leg_Glute_Bridge": ["img/Single_Leg_Glute_Bridge_0.jpg", "img/Single_Leg_Glute_Bridge_1.jpg"], "Sit_Squats": ["img/Sit_Squats_0.jpg", "img/Sit_Squats_1.jpg"], "Standing_Dumbbell_Press": ["img/Standing_Dumbbell_Press_0.jpg", "img/Standing_Dumbbell_Press_1.jpg"], "Standing_Dumbbell_Triceps_Extension": ["img/Standing_Dumbbell_Triceps_Extension_0.jpg", "img/Standing_Dumbbell_Triceps_Extension_1.jpg"], "Step-up_with_Knee_Raise": ["img/Step-up_with_Knee_Raise_0.jpg", "img/Step-up_with_Knee_Raise_1.jpg"], "Stiff-Legged_Dumbbell_Deadlift": ["img/Stiff-Legged_Dumbbell_Deadlift_0.jpg", "img/Stiff-Legged_Dumbbell_Deadlift_1.jpg"]};
+var IMG = {"Kettlebell_One-Legged_Deadlift": ["img/Kettlebell_One-Legged_Deadlift_0.jpg", "img/Kettlebell_One-Legged_Deadlift_1.jpg"], "Goblet_Squat": ["img/Goblet_Squat_0.jpg", "img/Goblet_Squat_1.jpg"], "Bent_Over_Two-Dumbbell_Row": ["img/Bent_Over_Two-Dumbbell_Row_0.jpg", "img/Bent_Over_Two-Dumbbell_Row_1.jpg"], "Bodyweight_Squat": ["img/Bodyweight_Squat_0.jpg", "img/Bodyweight_Squat_1.jpg"], "Bodyweight_Walking_Lunge": ["img/Bodyweight_Walking_Lunge_0.jpg", "img/Bodyweight_Walking_Lunge_1.jpg"], "Butt_Lift_Bridge": ["img/Butt_Lift_Bridge_0.jpg", "img/Butt_Lift_Bridge_1.jpg"], "Crunches": ["img/Crunches_0.jpg", "img/Crunches_1.jpg"], "Dead_Bug": ["img/Dead_Bug_0.jpg", "img/Dead_Bug_1.jpg"], "Dumbbell_Bicep_Curl": ["img/Dumbbell_Bicep_Curl_0.jpg", "img/Dumbbell_Bicep_Curl_1.jpg"], "Dumbbell_Floor_Press": ["img/Dumbbell_Floor_Press_0.jpg", "img/Dumbbell_Floor_Press_1.jpg"], "Dumbbell_Rear_Lunge": ["img/Dumbbell_Rear_Lunge_0.jpg", "img/Dumbbell_Rear_Lunge_1.jpg"], "Dumbbell_Squat_To_A_Bench": ["img/Dumbbell_Squat_To_A_Bench_0.jpg", "img/Dumbbell_Squat_To_A_Bench_1.jpg"], "Farmers_Walk": ["img/Farmers_Walk_0.jpg", "img/Farmers_Walk_1.jpg"], "Incline_Push-Up": ["img/Incline_Push-Up_0.jpg", "img/Incline_Push-Up_1.jpg"], "One-Arm_Dumbbell_Row": ["img/One-Arm_Dumbbell_Row_0.jpg", "img/One-Arm_Dumbbell_Row_1.jpg"], "Pushups": ["img/Pushups_0.jpg", "img/Pushups_1.jpg"], "Single_Leg_Glute_Bridge": ["img/Single_Leg_Glute_Bridge_0.jpg", "img/Single_Leg_Glute_Bridge_1.jpg"], "Sit_Squats": ["img/Sit_Squats_0.jpg", "img/Sit_Squats_1.jpg"], "Standing_Dumbbell_Press": ["img/Standing_Dumbbell_Press_0.jpg", "img/Standing_Dumbbell_Press_1.jpg"], "Standing_Dumbbell_Triceps_Extension": ["img/Standing_Dumbbell_Triceps_Extension_0.jpg", "img/Standing_Dumbbell_Triceps_Extension_1.jpg"], "Step-up_with_Knee_Raise": ["img/Step-up_with_Knee_Raise_0.jpg", "img/Step-up_with_Knee_Raise_1.jpg"], "Stiff-Legged_Dumbbell_Deadlift": ["img/Stiff-Legged_Dumbbell_Deadlift_0.jpg", "img/Stiff-Legged_Dumbbell_Deadlift_1.jpg"]};
 
 /* ---------- Program ---------- */
 var SLOTS = [
@@ -296,7 +298,14 @@ var EX = {
 var ROT = {A:["boxSquat","gobletSquat"], B:["chairPushup","ohPress","floorPress"], C:["reverseLunge","walkingLunge","stepUp","slBridge"], D:["singleArmRow","threePointRow","bentOverRow"], E:["weightedCrunch","farmersCarry","deadBug"], F:["bicepCurl","tricepExt"]};
 var EXTRA = {A:["bodyweightSquat","gluteBridge","backpackRdl"], B:["pushup"], C:[], D:[], E:[], F:[]};
 var LAD = {reps:[6,8,10,12], side:[6,8,10,12], sec:[30,40,50,60]};
-var SETS = 3, REST = 45, PER_MONTH = 8, WARM = [["March on the spot",30],["Arm circles",30],["Hip circles",30],["Slow squats",30]];
+var SETS = 3, REST = 45, PER_MONTH = 8, WARM = [
+  {name:"Single-leg glute bridge", photo:"Single_Leg_Glute_Bridge", reps:"10 per leg", secs:70, gear:"No weight", cues:["Lie on your back, one foot flat, other leg up","Push through the heel, squeeze your glutes at the top","Lower slowly, then switch legs"]},
+  {name:"Single-leg deadlift", photo:"Kettlebell_One-Legged_Deadlift", reps:"8 per leg", secs:60, gear:"No weight or one light dumbbell", note:"Photo uses a kettlebell: no weight or a light dumbbell is enough to warm up.", cues:["Stand on one leg, soft knee","Hinge at the hips, free leg goes back, back flat","Come up slowly, keep your balance, then switch"]},
+  {name:"Goblet squat", photo:"Goblet_Squat", reps:"10 reps", secs:45, gear:"One light dumbbell", note:"Photo uses a kettlebell: hold one light dumbbell at your chest.", cues:["Hold one light dumbbell at your chest","Chest up, sit down deep","Push through your heels to stand"]},
+  {name:"Lateral lunge", photo:"", reps:"8 per side", secs:60, gear:"No weight", cues:["Feet wide, toes pointing forward","Sink deep into one side, push your hips back, other leg straight","Push back to the middle, then the other side"]},
+  {name:"Cossack squat", photo:"", reps:"6 per side, slow", secs:55, gear:"No weight", cues:["Feet very wide, toes slightly out","Shift slowly into one deep side squat, other leg straight, toes up","Hold for a breath, move to the other side. Only go as deep as is comfortable"]}
+];
+var WARM_SECS = WARM.reduce(function(a,w){return a+w.secs},0);
 var TRAIN_DAYS = [2,5];
 var DOW = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
 var DOWL = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
@@ -399,7 +408,7 @@ function lineup(reentry){
   return SLOTS.map(function(s){var id=exFor(s.id,m);return {slot:s.id,cat:s.name,ex:id,dose:dose(s.id,id,reentry)}});
 }
 function estMinutes(list,sets){
-  var t=120;list.forEach(function(it){var per=it.dose.unit==="sec"?it.dose.target:it.dose.unit==="side"?it.dose.target*2*3.2:it.dose.target*3.2;t+=sets*(per+15)+(sets)*REST});
+  var t=WARM_SECS;list.forEach(function(it){var per=it.dose.unit==="sec"?it.dose.target:it.dose.unit==="side"?it.dose.target*2*3.2:it.dose.target*3.2;t+=sets*(per+15)+(sets)*REST});
   return Math.round(t/60);
 }
 
@@ -654,6 +663,7 @@ function openHow(){
     '<div><b>Two days a week</b>Every Tuesday and Friday. Miss one and it waits until the next training day; never two in one day. Away for 10+ days? Everything starts one step easier.</div>'+
     '<div><b>With dumbbells</b>Always 8 reps (or 8 per side). After two good sessions in a row the weight goes up: 2 kg for legs, 1 kg for the rest. Two "too hard"s in a row: back down.</div>'+
     '<div><b>Without weight</b>Reps go up from 6 to 12. After 12, the reps get slower instead (3 seconds down).</div>'+
+    '<div><b>Warm-up</b>About 5 minutes of leg and glute moves before every session, one round each. The timer moves on by itself; tap Next move if you\'re faster.</div>'+
     '<div><b>New exercises</b>Every 8 sessions you get a new exercise in each group. "Too easy" counts double.</div>'+
     '</div><div class="sbtns one1"><button class="btn btn-ink" data-act="closesheet">Got it</button></div>',"How it works");
 }
@@ -677,7 +687,7 @@ function startSession(mode){
   var re=away()&&mode!=="extra";
   var list=lineup(re),sets=mode==="short"?1:SETS;
   P={mode:mode,reentry:re,sets:sets,items:list.map(function(it){return {slot:it.slot,ex:it.ex,target:it.dose.target,unit:it.dose.unit,kg:[],curKg:(re&&weighted(it.ex))?Math.max(0.5,kgOf(it.ex)-kgStep(it.slot)):kgOf(it.ex),done:0,easier:false}}),
-     phase:"warm",wi:0,i:0,set:1,phaseStart:Date.now(),phaseLen:WARM[0][1],paused:false,pausedAt:0,elapsed:0,lastTick:Date.now(),timer:false,confirm:false,dur:0};
+     phase:"warm",wi:0,i:0,set:1,phaseStart:Date.now(),phaseLen:WARM[0].secs,paused:false,pausedAt:0,elapsed:0,lastTick:Date.now(),timer:false,confirm:false,dur:0};
   try{actx=actx||new (window.AudioContext||window.webkitAudioContext)()}catch(e){}
   try{if(navigator.wakeLock)navigator.wakeLock.request("screen").then(function(w){wake=w}).catch(function(){})}catch(e){}
   clearInterval(tick);tick=setInterval(onTick,250);
@@ -695,7 +705,7 @@ function onTick(){
     if(r<=3.05&&r>2.8)beep(660,.08);
     if(r<=0){
       beep(990,.25);
-      if(P.phase==="warm"){if(P.wi<WARM.length-1){P.wi++;P.phaseStart=now;P.phaseLen=WARM[P.wi][1];renderPlayer()}else toWork()}
+      if(P.phase==="warm"){if(P.wi<WARM.length-1){P.wi++;P.phaseStart=now;P.phaseLen=WARM[P.wi].secs;renderPlayer()}else toWork()}
       else if(P.phase==="rest")toWork();
       else setDone();
     }
@@ -753,8 +763,11 @@ function renderPlayer(){
   var body="";
   if(P.phase==="warm"){
     var w=WARM[P.wi];
-    body='<div class="warm"><div class="small" style="color:var(--on-hero-muted)">Warm-up '+(P.wi+1)+' of '+WARM.length+'</div><h2>'+w[0]+'</h2><div class="c" id="p-count">'+mmss(remaining())+'</div><div class="small" style="color:var(--on-hero-muted)">Easy pace. Just get warm.</div></div>'+
-      '<div class="ctrl"><button class="ibtn" data-act="pause" aria-label="Pause workout">'+I.pause+'</button><button class="btn btn-accent" data-act="skipwarm">Skip warm-up</button></div>';
+    body='<div class="pphoto">'+(w.photo?photo(w.photo,"",S.prefs.photo,w.note?'<span class="pnote">'+esc(w.note)+'</span>':''):'<div class="nophoto"><span>No photo for this one.<br>Follow the steps below.</span></div>')+'<span class="wtag">Warm-up '+(P.wi+1)+'/'+WARM.length+'</span></div>'+
+      '<div class="pname"><div class="grow"><h2 class="one">'+esc(w.name)+'</h2><div class="g one">'+esc(w.reps)+' · '+esc(w.gear)+'</div></div><div class="target"><div class="v" id="p-count">'+mmss(remaining())+'</div><div class="u">easy pace</div></div></div>'+
+      '<ol class="cues">'+w.cues.map(function(c,k){return '<li><span class="n">'+(k+1)+'</span><span>'+esc(c)+'</span></li>'}).join("")+'</ol>'+
+      '<div class="pnext"><span class="one">'+(P.wi<WARM.length-1?'Next: '+esc(WARM[P.wi+1].name):'Then: your session')+'</span><button class="linkbtn" data-act="skipwarm">Skip warm-up</button></div>'+
+      '<div class="ctrl"><button class="ibtn" data-act="pause" aria-label="Pause workout">'+I.pause+'</button><button class="btn btn-accent" data-act="warmnext">'+(P.wi<WARM.length-1?'Next move':'Start the session')+'</button></div>';
   }else{
     var mode=S.prefs.photo;
     var timerOn=P.phase==="work"&&P.timer;
@@ -850,6 +863,7 @@ document.addEventListener("click",function(ev){
     case "cancelend":P.confirm=false;pause(false);break;
     case "endnow":P.confirm=false;finish(true);break;
     case "skipwarm":toWork();break;
+    case "warmnext":if(P.wi<WARM.length-1){P.wi++;P.phaseStart=Date.now();P.phaseLen=WARM[P.wi].secs;renderPlayer()}else toWork();break;
     case "setdone":setDone();break;
     case "starttimer":P.timer=true;P.phaseStart=Date.now();P.phaseLen=P.items[P.i].target;renderPlayer();break;
     case "skiprest":toWork();break;
@@ -877,7 +891,7 @@ document.addEventListener("wheel",function(e){if(e.ctrlKey)e.preventDefault()},{
 var rsz=null;window.addEventListener("resize",function(){clearTimeout(rsz);rsz=setTimeout(function(){if(!P&&!layer.innerHTML)render()},150)});
 
 render();
-var APP_VERSION = "2026.11.18-1";
+var APP_VERSION = "2026.11.19-1";
 var updateWaiting = false;
 function checkForUpdate(){
   if(!navigator.onLine)return;
