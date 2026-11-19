@@ -227,6 +227,8 @@ ol.cues .n{width:20px;height:20px;border-radius:6px;background:var(--soft);font-
 .rest .l{font-size:12.5px;opacity:.88}
 .rest button{border-radius:12px;height:44px;padding:0 14px;font-weight:700;background:#fff;color:#2B45D9}
 .rest .plus{background:rgba(255,255,255,.18);color:#fff}
+.nophoto2{display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:var(--faint)}
+.player .nophoto2{color:var(--on-hero-muted)}
 .nophoto{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:16px;color:var(--on-hero-muted);font-size:14px}
 .wtag{position:absolute;left:8px;top:8px;z-index:3;font-size:11px;font-weight:700;color:#15171A;background:#C6F432;border-radius:999px;padding:4px 9px}
 .warm{flex:1;min-height:0;border-radius:20px;background:var(--hero-2);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;text-align:center;padding:16px}
@@ -265,7 +267,7 @@ ol.cues .n{width:20px;height:20px;border-radius:6px;background:var(--soft);font-
 "use strict";
 
 /* ---------- Photos (free-exercise-db, public domain) ---------- */
-var IMG = {"Arm_Circles": ["img/Arm_Circles_0.jpg", "img/Arm_Circles_1.jpg"], "Kettlebell_One-Legged_Deadlift": ["img/Kettlebell_One-Legged_Deadlift_0.jpg", "img/Kettlebell_One-Legged_Deadlift_1.jpg"], "Goblet_Squat": ["img/Goblet_Squat_0.jpg", "img/Goblet_Squat_1.jpg"], "Bent_Over_Two-Dumbbell_Row": ["img/Bent_Over_Two-Dumbbell_Row_0.jpg", "img/Bent_Over_Two-Dumbbell_Row_1.jpg"], "Bodyweight_Squat": ["img/Bodyweight_Squat_0.jpg", "img/Bodyweight_Squat_1.jpg"], "Bodyweight_Walking_Lunge": ["img/Bodyweight_Walking_Lunge_0.jpg", "img/Bodyweight_Walking_Lunge_1.jpg"], "Butt_Lift_Bridge": ["img/Butt_Lift_Bridge_0.jpg", "img/Butt_Lift_Bridge_1.jpg"], "Crunches": ["img/Crunches_0.jpg", "img/Crunches_1.jpg"], "Dead_Bug": ["img/Dead_Bug_0.jpg", "img/Dead_Bug_1.jpg"], "Dumbbell_Bicep_Curl": ["img/Dumbbell_Bicep_Curl_0.jpg", "img/Dumbbell_Bicep_Curl_1.jpg"], "Dumbbell_Floor_Press": ["img/Dumbbell_Floor_Press_0.jpg", "img/Dumbbell_Floor_Press_1.jpg"], "Dumbbell_Rear_Lunge": ["img/Dumbbell_Rear_Lunge_0.jpg", "img/Dumbbell_Rear_Lunge_1.jpg"], "Dumbbell_Squat_To_A_Bench": ["img/Dumbbell_Squat_To_A_Bench_0.jpg", "img/Dumbbell_Squat_To_A_Bench_1.jpg"], "Farmers_Walk": ["img/Farmers_Walk_0.jpg", "img/Farmers_Walk_1.jpg"], "Incline_Push-Up": ["img/Incline_Push-Up_0.jpg", "img/Incline_Push-Up_1.jpg"], "One-Arm_Dumbbell_Row": ["img/One-Arm_Dumbbell_Row_0.jpg", "img/One-Arm_Dumbbell_Row_1.jpg"], "Pushups": ["img/Pushups_0.jpg", "img/Pushups_1.jpg"], "Single_Leg_Glute_Bridge": ["img/Single_Leg_Glute_Bridge_0.jpg", "img/Single_Leg_Glute_Bridge_1.jpg"], "Sit_Squats": ["img/Sit_Squats_0.jpg", "img/Sit_Squats_1.jpg"], "Standing_Dumbbell_Press": ["img/Standing_Dumbbell_Press_0.jpg", "img/Standing_Dumbbell_Press_1.jpg"], "Standing_Dumbbell_Triceps_Extension": ["img/Standing_Dumbbell_Triceps_Extension_0.jpg", "img/Standing_Dumbbell_Triceps_Extension_1.jpg"], "Step-up_with_Knee_Raise": ["img/Step-up_with_Knee_Raise_0.jpg", "img/Step-up_with_Knee_Raise_1.jpg"], "Stiff-Legged_Dumbbell_Deadlift": ["img/Stiff-Legged_Dumbbell_Deadlift_0.jpg", "img/Stiff-Legged_Dumbbell_Deadlift_1.jpg"]};
+var IMG = {"Kettlebell_Pistol_Squat": ["img/Kettlebell_Pistol_Squat_0.jpg", "img/Kettlebell_Pistol_Squat_1.jpg"], "Push-Ups_With_Feet_Elevated": ["img/Push-Ups_With_Feet_Elevated_0.jpg", "img/Push-Ups_With_Feet_Elevated_1.jpg"], "Weighted_Bench_Dip": ["img/Weighted_Bench_Dip_0.jpg", "img/Weighted_Bench_Dip_1.jpg"], "Bench_Dips": ["img/Bench_Dips_0.jpg", "img/Bench_Dips_1.jpg"], "Arm_Circles": ["img/Arm_Circles_0.jpg", "img/Arm_Circles_1.jpg"], "Kettlebell_One-Legged_Deadlift": ["img/Kettlebell_One-Legged_Deadlift_0.jpg", "img/Kettlebell_One-Legged_Deadlift_1.jpg"], "Goblet_Squat": ["img/Goblet_Squat_0.jpg", "img/Goblet_Squat_1.jpg"], "Bent_Over_Two-Dumbbell_Row": ["img/Bent_Over_Two-Dumbbell_Row_0.jpg", "img/Bent_Over_Two-Dumbbell_Row_1.jpg"], "Bodyweight_Squat": ["img/Bodyweight_Squat_0.jpg", "img/Bodyweight_Squat_1.jpg"], "Bodyweight_Walking_Lunge": ["img/Bodyweight_Walking_Lunge_0.jpg", "img/Bodyweight_Walking_Lunge_1.jpg"], "Butt_Lift_Bridge": ["img/Butt_Lift_Bridge_0.jpg", "img/Butt_Lift_Bridge_1.jpg"], "Crunches": ["img/Crunches_0.jpg", "img/Crunches_1.jpg"], "Dead_Bug": ["img/Dead_Bug_0.jpg", "img/Dead_Bug_1.jpg"], "Dumbbell_Bicep_Curl": ["img/Dumbbell_Bicep_Curl_0.jpg", "img/Dumbbell_Bicep_Curl_1.jpg"], "Dumbbell_Floor_Press": ["img/Dumbbell_Floor_Press_0.jpg", "img/Dumbbell_Floor_Press_1.jpg"], "Dumbbell_Rear_Lunge": ["img/Dumbbell_Rear_Lunge_0.jpg", "img/Dumbbell_Rear_Lunge_1.jpg"], "Dumbbell_Squat_To_A_Bench": ["img/Dumbbell_Squat_To_A_Bench_0.jpg", "img/Dumbbell_Squat_To_A_Bench_1.jpg"], "Farmers_Walk": ["img/Farmers_Walk_0.jpg", "img/Farmers_Walk_1.jpg"], "Incline_Push-Up": ["img/Incline_Push-Up_0.jpg", "img/Incline_Push-Up_1.jpg"], "One-Arm_Dumbbell_Row": ["img/One-Arm_Dumbbell_Row_0.jpg", "img/One-Arm_Dumbbell_Row_1.jpg"], "Pushups": ["img/Pushups_0.jpg", "img/Pushups_1.jpg"], "Single_Leg_Glute_Bridge": ["img/Single_Leg_Glute_Bridge_0.jpg", "img/Single_Leg_Glute_Bridge_1.jpg"], "Sit_Squats": ["img/Sit_Squats_0.jpg", "img/Sit_Squats_1.jpg"], "Standing_Dumbbell_Press": ["img/Standing_Dumbbell_Press_0.jpg", "img/Standing_Dumbbell_Press_1.jpg"], "Standing_Dumbbell_Triceps_Extension": ["img/Standing_Dumbbell_Triceps_Extension_0.jpg", "img/Standing_Dumbbell_Triceps_Extension_1.jpg"], "Step-up_with_Knee_Raise": ["img/Step-up_with_Knee_Raise_0.jpg", "img/Step-up_with_Knee_Raise_1.jpg"], "Stiff-Legged_Dumbbell_Deadlift": ["img/Stiff-Legged_Dumbbell_Deadlift_0.jpg", "img/Stiff-Legged_Dumbbell_Deadlift_1.jpg"]};
 
 /* ---------- Program ---------- */
 var SLOTS = [
@@ -308,6 +310,51 @@ var SETS = 3, REST = 45, PER_MONTH = 8, WARM = [
   {name:"Cossack squat", photo:"", reps:"6 per side, slow", secs:55, gear:"No weight", cues:["Feet very wide, toes slightly out","Shift slowly into one deep side squat, other leg straight, toes up","Hold for a breath, move to the other side. Only go as deep as is comfortable"]}
 ];
 var WARM_SECS = WARM.reduce(function(a,w){return a+w.secs},0);
+
+/* ---------- Bodyweight moves with levels (easier → harder variant) ---------- */
+var FAM = {
+  chairPushup:{unit:"reps", start:1, v:[
+    {name:"Wall push-up", gear:"A wall", photo:"Incline_Push-Up", note:"Photo uses a box: put your hands on a wall instead.", cues:["Hands on the wall at shoulder height, a bit wider than your shoulders","Step back until your body is in one straight line","Bring your chest to the wall, then push back"]},
+    {name:"Incline push-up", gear:"Couch or chair against a wall", photo:"Incline_Push-Up", note:"Photo uses a box: use the edge of your couch, or a chair against a wall.", cues:["Hands on the edge, a bit wider than your shoulders","Body in one straight line, squeeze your glutes","Lower your chest to the edge, push back up"]},
+    {name:"Push-up", gear:"No equipment", photo:"Pushups", note:"", cues:["Hands a bit wider than your shoulders","Body in one straight line from head to heels","Lower your chest close to the floor, push back up"]},
+    {name:"Decline push-up", gear:"Couch or chair", photo:"Push-Ups_With_Feet_Elevated", note:"Photo uses a bench: put your feet on the couch.", cues:["Feet on the couch, hands on the floor","Body in one straight line, don't let your hips sag","Lower your chest towards the floor, push back up"]}
+  ]},
+  pistolSquat:{unit:"side", side:"per leg", start:0, v:[
+    {name:"Assisted pistol to couch", gear:"Couch + something to hold", photo:"Kettlebell_Pistol_Squat", note:"Photo shows a free pistol with a kettlebell: hold the armrest or a doorframe and sit down onto the couch on one leg.", cues:["Stand in front of the couch on one leg, other leg out in front","Hold on and sit down slowly onto the couch","Push through your standing heel to come back up"]},
+    {name:"Pistol to couch", gear:"Couch", photo:"Kettlebell_Pistol_Squat", note:"Photo uses a kettlebell: no weight, arms out in front for balance.", cues:["Stand in front of the couch on one leg, arms out in front","Sit down slowly onto the couch, no hands","Stand back up without rocking"]},
+    {name:"Assisted pistol squat", gear:"Doorframe to hold", photo:"Kettlebell_Pistol_Squat", note:"Photo uses a kettlebell: hold a doorframe and go all the way down.", cues:["Hold a doorframe, one leg out in front","Squat down on one leg as low as you can, heel stays down","Pull lightly on the doorframe only where you need it"]},
+    {name:"Pistol squat", gear:"No equipment", photo:"Kettlebell_Pistol_Squat", note:"Photo uses a kettlebell: no weight needed, arms out for balance.", cues:["Stand on one leg, other leg and arms out in front","Squat all the way down under control","Drive back up through your heel"]}
+  ]},
+  benchDips:{unit:"reps", start:0, v:[
+    {name:"Couch dips, knees bent", gear:"Couch or sturdy chair", photo:"Bench_Dips", note:"Photo uses benches: hands on the edge of your couch, feet flat, knees bent.", cues:["Hands on the edge, fingers forward, back close to the couch","Bend your elbows to lower your hips","Push back up until your arms are straight"]},
+    {name:"Couch dips, legs straight", gear:"Couch or sturdy chair", photo:"Bench_Dips", note:"Photo uses benches: hands on your couch, legs straight, heels on the floor.", cues:["Hands on the edge, legs straight out in front","Lower your hips, back close to the couch","Push back up until your arms are straight"]},
+    {name:"Feet-up dips", gear:"Couch + a chair", photo:"Weighted_Bench_Dip", note:"Photo shows a weight on the lap: skip it, just put your feet up on a chair.", cues:["Hands on the couch, heels on a chair in front of you","Lower your hips until your elbows are at about 90°","Push back up until your arms are straight"]},
+    {name:"Weighted feet-up dips", gear:"Couch, a chair + one dumbbell", photo:"Weighted_Bench_Dip", note:"Put one dumbbell on your lap.", start:[2,6,"one dumbbell on your lap"], cues:["Feet up on the chair, dumbbell on your lap","Lower your hips until your elbows are at about 90°","Push back up until your arms are straight"]}
+  ]},
+  pikeHold:{unit:"sec", lad:[15,20,25,30], start:1, v:[
+    {name:"Pike hold", gear:"No equipment", photo:"", cues:["Hands and feet on the floor, hips high (an upside-down V)","Push the floor away, ears between your arms","Hold still and keep breathing"]},
+    {name:"Elevated pike hold", gear:"Couch", photo:"", cues:["Feet on the couch, hands on the floor, hips high above your shoulders","Push the floor away, ears between your arms","Hold still, core tight"]},
+    {name:"Steep elevated pike hold", gear:"Couch", photo:"", cues:["Feet on the couch, walk your hands closer so your body is more upright","Shoulders stacked over your hands, push the floor away","Hold still, core tight"]}
+  ]},
+  straightPlank:{unit:"sec", lad:[30,40,50,60], start:0, v:[
+    {name:"Elevated straight-arm plank", gear:"Couch", photo:"Incline_Push-Up", note:"Photo shows a push-up: just hold the top position, hands on the couch.", cues:["Hands on the couch under your shoulders, arms straight","Body in one straight line, squeeze glutes and belly","Hold still and breathe"]},
+    {name:"Straight-arm plank", gear:"No equipment", photo:"Pushups", note:"Photo shows a push-up: just hold the top position.", cues:["Hands under your shoulders on the floor, arms straight","Body in one straight line","Hold still and breathe"]},
+    {name:"Plank with shoulder taps", gear:"No equipment", photo:"Pushups", note:"Photo shows a push-up: hold the top position and tap the opposite shoulder.", cues:["Straight-arm plank, feet a bit wider","Tap one hand to the opposite shoulder, hips stay still","Alternate sides for the whole time"]},
+    {name:"Feet-up straight-arm plank", gear:"Couch", photo:"Push-Ups_With_Feet_Elevated", note:"Photo shows a push-up: hold the top position with your feet on the couch.", cues:["Feet on the couch, hands on the floor under your shoulders","Body in one straight line, don't let your hips sag","Hold still and breathe"]}
+  ]}
+};
+function isFam(id){return !!FAM[id]}
+function famLevel(id){var f=FAM[id],v=S&&S.var?S.var[id]:undefined;return typeof v==="number"?Math.max(0,Math.min(f.v.length-1,v)):f.start}
+Object.keys(FAM).forEach(function(id){
+  var f=FAM[id],o={unit:f.unit,side:f.side,lad:f.lad};
+  ["name","gear","photo","note","cues","start"].forEach(function(k){
+    Object.defineProperty(o,k,{enumerable:true,get:function(){var v=f.v[famLevel(id)];return (k in v)?v[k]:(k==="note"?"":k==="photo"?"":undefined)}});
+  });
+  EX[id]=o;
+});
+function ladOf(e){return e.lad||LAD[e.unit]}
+ROT.C.push("pistolSquat");ROT.E.push("pikeHold","straightPlank");ROT.F.push("benchDips");
+
 var TRAIN_DAYS = [2,5];
 var DOW = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
 var DOWL = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
@@ -333,13 +380,14 @@ function mmss(sec){sec=Math.max(0,Math.round(sec));return Math.floor(sec/60)+":"
 var KEY = "home-strength-plan-v1";
 function fresh(){
   var slots={};SLOTS.forEach(function(s){slots[s.id]={step:0,load:0,streak:0,hard:0}});
-  return {v:1,startedAt:today(),log:[],slots:slots,swaps:{},weights:{},prefs:{photo:"auto"}};
+  return {v:1,startedAt:today(),log:[],slots:slots,swaps:{},weights:{},var:{},prefs:{photo:"auto"}};
 }
 var S = fresh();
 var storeMode = "local";
 var dbRef = null, saveTimer = null;
 try{var raw=localStorage.getItem(KEY);if(raw){var p=JSON.parse(raw);if(p&&p.v===1)S=p}}catch(e){}
 if(!S.weights)S.weights={};
+if(!S.var)S.var={};
 
 function save(){
   try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}
@@ -382,7 +430,7 @@ function away(){var l=lastDate();return l?daysBetween(l,today())>10:false}
 var FIXED = {reps:8, side:8, sec:40};
 function weighted(exId){return !!(EX[exId]&&EX[exId].start)}
 function dose(slot,exId,reentry){
-  var e=EX[exId],st=S.slots[slot],lad=LAD[e.unit];
+  var e=EX[exId],st=S.slots[slot],lad=ladOf(e);
   var step=Math.max(0,Math.min(3,st.step-(reentry?1:0)));
   if(weighted(exId))return {target:FIXED[e.unit],step:step,load:st.load,unit:e.unit,label:unitLabel(e),fixed:true};
   return {target:lad[step],step:step,load:st.load,unit:e.unit,label:unitLabel(e)};
@@ -444,13 +492,13 @@ function timeline(from,to){
 
 /* Progression after a session */
 function applyProgression(sess,feel){
-  var changes=[],before={slots:JSON.parse(JSON.stringify(S.slots)),weights:JSON.parse(JSON.stringify(S.weights||{}))};
+  var changes=[],before={slots:JSON.parse(JSON.stringify(S.slots)),weights:JSON.parse(JSON.stringify(S.weights||{})),var:JSON.parse(JSON.stringify(S.var||{}))};
   if(sess.reentry){SLOTS.forEach(function(s){var st=S.slots[s.id];if(st.step>0)st.step--;st.streak=0});changes.push({t:"Welcome back",d:"Everything was one step easier today. You build back up from here."})}
   if(sess.short||sess.partial){
     changes.push({t:sess.short?"Short version counted":"Partial session counted",d:"It counts as a session. Weights and reps only go up after full sessions."});
   }else{
     sess.items.forEach(function(it){
-      var st=S.slots[it.slot],e=EX[it.ex],lad=LAD[e.unit],w=kgOf(it.ex),usedKg=!!e.start;
+      var st=S.slots[it.slot],e=EX[it.ex],lad=ladOf(e),w=kgOf(it.ex),usedKg=!!e.start;
       if(usedKg){
         var fx=FIXED[e.unit]+" "+unitLabel(e);
         if(feel==="hard"||it.easier){
@@ -464,12 +512,13 @@ function applyProgression(sess,feel){
       }
       if(feel==="hard"||it.easier){
         st.streak=0;st.hard++;
-        if(st.hard>=2){st.hard=0;if(st.step>0){st.step--;changes.push({t:e.name+" eases off",d:"Two tough sessions in a row: next time "+lad[st.step]+" "+unitLabel(e)+"."})}}
+        if(st.hard>=2){st.hard=0;if(st.step>0){st.step--;changes.push({t:e.name+" eases off",d:"Two tough sessions in a row: next time "+lad[st.step]+" "+unitLabel(e)+"."})}else if(isFam(it.ex)&&famLevel(it.ex)>0){S.var[it.ex]=famLevel(it.ex)-1;st.step=2;changes.push({t:"Back to "+e.name,d:"Two tough sessions in a row: next time the easier version, "+SETS+" × "+ladOf(e)[2]+" "+unitLabel(e)+"."})}}
       }else{
         st.hard=0;st.streak+=(feel==="easy"?2:1);
         if(st.streak>=2){
           st.streak=0;
           if(st.step<3){st.step++;changes.push({t:e.name+" gets harder",d:"Next time "+SETS+" × "+lad[st.step]+" "+unitLabel(e)+"."})}
+          else if(isFam(it.ex)&&famLevel(it.ex)<FAM[it.ex].v.length-1){var was=e.name;S.var[it.ex]=famLevel(it.ex)+1;st.step=0;changes.push({t:"Level up: "+e.name,d:"You mastered "+was.toLowerCase()+". Next time "+SETS+" × "+ladOf(e)[0]+" "+unitLabel(e)+(e.start?", start light: "+e.start[0]+" kg":"")+"."})}
           else{st.load++;st.step=1;var w=kgOf(it.ex);if(w){S.weights[it.ex]=w+kgStep(it.slot);changes.push({t:e.name+": more weight",d:"Go to "+fmtKg(S.weights[it.ex])+" next time. Reps go back to "+lad[1]+"."})}else changes.push({t:e.name+": add weight",d:loadAdvice(e)+" Reps go back to "+lad[1]+"."})}
         }
       }
@@ -487,7 +536,7 @@ function applyProgression(sess,feel){
 function loadAdvice(e){var g=e.gear.toLowerCase();if(g.indexOf("dumbbell")>=0)return "Use heavier dumbbells, and log the new weight.";if(g.indexOf("backpack")>=0)return "Put 2 more books in the backpack.";if(g.indexOf("bag")>=0)return "Fill the bags a bit more.";if(g.indexOf("book")>=0)return "Use a heavier book.";return "Go slower: 3 seconds down on every rep."}
 function refeel(feel){
   var sess=S.log[S.log.length-1];if(!sess||!sess.before)return;
-  if(sess.before.slots){S.slots=JSON.parse(JSON.stringify(sess.before.slots));S.weights=JSON.parse(JSON.stringify(sess.before.weights||{}))}else S.slots=JSON.parse(JSON.stringify(sess.before));
+  if(sess.before.slots){S.slots=JSON.parse(JSON.stringify(sess.before.slots));S.weights=JSON.parse(JSON.stringify(sess.before.weights||{}));S.var=JSON.parse(JSON.stringify(sess.before.var||S.var||{}))}else S.slots=JSON.parse(JSON.stringify(sess.before));
   applyProgression(sess,feel);save();
 }
 
@@ -500,6 +549,7 @@ var SHORT={A:"Squat",B:"Press",C:"1 leg",D:"Pull",E:"Core",F:"Arms"};
 function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
 function photo(key,cls,mode,extra){
   var im=IMG[key]||["",""];
+  if(!im[0])return '<div class="flip nophoto2"><span>No photo</span></div>'+(extra||"");
   return '<div class="flip '+(cls||"")+' m-'+(mode||"auto")+'">'+
     (im[0]?'<img src="'+im[0]+'" alt="'+esc(key.replace(/_/g," "))+', start position" draggable="false">':"")+
     (im[1]?'<img class="b" src="'+im[1]+'" alt="'+esc(key.replace(/_/g," "))+', end position" draggable="false">':"")+'</div>'+(extra||"");
@@ -609,10 +659,10 @@ function viewProgress(){
   h+='<div class="card" style="flex:none"><div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px"><b>Showing up</b><span class="small muted">'+(due?done+' of '+due+' done':'Fills in as you go')+'</span></div><div class="dots">'+
     tl.map(function(x){var c=x.state==="done"?"on":(x.state==="today"||x.state==="open")?"now":x.state==="missed"?"miss":"later";return '<span class="dot '+c+'" title="'+short(x.date)+'"></span>'}).join("")+'</div></div>';
   h+='<div class="slots">'+SLOTS.map(function(s){
-    var id=exFor(s.id,m),e=EX[id],d=dose(s.id,id,false),lad=LAD[e.unit],w=kgOf(id);
+    var id=exFor(s.id,m),e=EX[id],d=dose(s.id,id,false),lad=ladOf(e),w=kgOf(id);
     var right,val,nx,bars="";
     if(d.fixed){right=w?"+"+kgStep(s.id)+" kg next":"";val=w?fmtKg(w):"No weight yet";nx=doseText(d)+(w?" · next "+fmtKg(w+kgStep(s.id)):" · log a weight")}
-    else{right="step "+(d.step+1)+"/4";val=doseText(d);nx=d.step<3?"next: "+lad[d.step+1]+" "+unitLabel(e):"next: slower reps";bars='<div class="lvl">'+[0,1,2,3].map(function(k){return '<span class="'+(k<=d.step?"on":"")+'"></span>'}).join("")+'</div>'}
+    else{right="step "+(d.step+1)+"/4";val=doseText(d);nx=d.step<3?"next: "+lad[d.step+1]+" "+unitLabel(e):(isFam(id)&&famLevel(id)<FAM[id].v.length-1?"next: "+FAM[id].v[famLevel(id)+1].name:"next: slower reps");bars='<div class="lvl">'+[0,1,2,3].map(function(k){return '<span class="'+(k<=d.step?"on":"")+'"></span>'}).join("")+'</div>'}
     return '<div class="slotc"><div class="h"><span>'+s.id+' · '+SHORT[s.id]+'</span><span>'+right+'</span></div><div class="nm one">'+esc(e.name)+'</div><div class="v one">'+val+'</div>'+bars+'<div class="nx one">'+nx+'</div></div>';
   }).join("")+'</div>';
   h+='<div class="row2"><button class="btn btn-soft" data-act="how">'+I.info+'How it works</button><button class="btn btn-soft" data-act="data">'+I.box+'Backup</button></div>';
@@ -637,6 +687,7 @@ function openExSheet(slot,id,from){
   var facts='<span class="fact">'+esc(e.gear)+'</span>';
   if(isCur)facts+='<span class="fact"><b>'+doseLine(slot,id)+'</b></span>';
   if(e.start&&!kgOf(id))facts+='<span class="fact">Start: <b>'+e.start[0]+'–'+e.start[1]+' kg</b> '+e.start[2]+'</span>';
+  if(isFam(id)){var lv=famLevel(id),nv=FAM[id].v.length;facts+='<span class="fact">Level <b>'+(lv+1)+'/'+nv+'</b>'+(lv<nv-1?' · next: '+esc(FAM[id].v[lv+1].name):' · top level')+'</span>'+(lv>0?'<button class="fact" data-act="famset" data-v="-1" data-x="'+id+'" data-s="'+slot+'" data-f="'+from+'">− Easier</button>':'')+(lv<nv-1?'<button class="fact" data-act="famset" data-v="1" data-x="'+id+'" data-s="'+slot+'" data-f="'+from+'">+ Harder</button>':'')}
   var hist=kgHistory(id).slice(-3);
   if(hist.length)facts+='<span class="fact">Last: '+hist.map(function(x){return '<b>'+fmtKg(x.kg)+'</b>'}).join(" → ")+'</span>';
   var btns;
@@ -664,7 +715,7 @@ function openHow(){
   sheet(sheetHead("","How it works")+'<div class="rules">'+
     '<div><b>Two days a week</b>Every Tuesday and Friday. Miss one and it waits until the next training day; never two in one day. Away for 10+ days? Everything starts one step easier.</div>'+
     '<div><b>With dumbbells</b>Always 8 reps (or 8 per side). After two good sessions in a row the weight goes up: 2 kg for legs, 1 kg for the rest. Two "too hard"s in a row: back down.</div>'+
-    '<div><b>Without weight</b>Reps go up from 6 to 12. After 12, the reps get slower instead (3 seconds down).</div>'+
+    '<div><b>Without weight</b>Reps go up from 6 to 12 (holds go up in seconds). At the top you move to the harder version: incline push-up → push-up → decline push-up, assisted pistol → full pistol, and so on. You can also pick a level yourself in the exercise details.</div>'+
     '<div><b>Warm-up</b>About 6 minutes before every session: marching and arm circles, then leg and glute moves, one round each. The timer moves on by itself; tap Next move if you\'re faster.</div>'+
     '<div><b>New exercises</b>Every 8 sessions you get a new exercise in each group. "Too easy" counts double.</div>'+
     '</div><div class="sbtns one1"><button class="btn btn-ink" data-act="closesheet">Got it</button></div>',"How it works");
@@ -833,7 +884,7 @@ document.addEventListener("input",function(ev){
 document.addEventListener("change",function(ev){
   if(ev.target.id!=="import-file"||!ev.target.files[0])return;
   var r=new FileReader();r.onload=function(){
-    try{var d=JSON.parse(r.result);if(!d||d.v!==1||!Array.isArray(d.log)||!d.slots)throw 0;S=d;if(!S.weights)S.weights={};save();render();toast("Backup restored: "+S.log.length+" sessions")}
+    try{var d=JSON.parse(r.result);if(!d||d.v!==1||!Array.isArray(d.log)||!d.slots)throw 0;S=d;if(!S.weights)S.weights={};if(!S.var)S.var={};save();render();toast("Backup restored: "+S.log.length+" sessions")}
     catch(e){toast("That file isn't a training backup")}
   };r.readAsText(ev.target.files[0]);ev.target.value="";
 });
@@ -872,6 +923,7 @@ document.addEventListener("click",function(ev){
     case "plus":P.phaseLen+=15;break;
     case "easier":var it=P.items[P.i];it.easier=true;it.target=Math.max(it.unit==="sec"?15:3,it.target-(it.unit==="sec"?10:2));renderPlayer();break;
     case "photo":S.prefs.photo=v;save();var pm=document.querySelector(".pphoto .flip");if(pm){pm.className="flip m-"+v;document.querySelectorAll(".pmode button").forEach(function(btn){btn.setAttribute("aria-pressed",String(btn.getAttribute("data-v")===v))})}break;
+    case "famset":S.var[x]=Math.max(0,Math.min(FAM[x].v.length-1,famLevel(x)+parseInt(v,10)));save();render();openExSheet(b.getAttribute("data-s"),x,b.getAttribute("data-f"));toast(EX[x].name);break;
     case "kgset":setKg(P.items[P.i],parseFloat(v));break;
     case "kg":var ik=P.items[P.i];setKg(ik,(ik.curKg||0)+parseFloat(v));break;
     case "feel":refeel(v);P.sess=S.log[S.log.length-1];renderDone();break;
@@ -893,7 +945,7 @@ document.addEventListener("wheel",function(e){if(e.ctrlKey)e.preventDefault()},{
 var rsz=null;window.addEventListener("resize",function(){clearTimeout(rsz);rsz=setTimeout(function(){if(!P&&!layer.innerHTML)render()},150)});
 
 render();
-var APP_VERSION = "2026.11.19-2";
+var APP_VERSION = "2026.11.19-3";
 var updateWaiting = false;
 function checkForUpdate(){
   if(!navigator.onLine)return;
