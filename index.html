@@ -126,10 +126,6 @@ h1,h2,h3{font-family:var(--font-display);font-weight:800;letter-spacing:-0.02em;
 .dot.now{background:var(--accent);outline:1.5px solid var(--ink);outline-offset:-1.5px}
 .dot.miss{background:transparent;outline:1.5px dashed var(--faint);outline-offset:-1.5px}
 .dot.later{opacity:.4}
-.bar{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:4px}
-.bar span{height:8px;border-radius:4px;background:var(--line)}
-.bar span.on{background:var(--ink)}
-.bar span.now{background:var(--accent);outline:1px solid var(--ink);outline-offset:-1px}
 .list{background:var(--surface);border-radius:18px;overflow:hidden;flex:none}
 .day{display:flex;align-items:center;gap:12px;padding:0 12px;height:clamp(50px,7.2vh,60px)}
 .day + .day{border-top:1px solid var(--soft)}
@@ -224,7 +220,8 @@ ol.cues .n{width:20px;height:20px;border-radius:6px;background:var(--soft);font-
 .ctrl .btn{flex:1;min-height:58px;border-radius:18px;font-size:17px}
 .rest{flex:none;background:#2B45D9;color:#fff;border-radius:18px;padding:10px 10px 10px 16px;display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:58px}
 .rest .v{font-family:var(--font-display);font-size:30px;font-weight:800;line-height:1;font-variant-numeric:tabular-nums}
-.rest .l{font-size:12.5px;opacity:.88}
+.rest .l{font-size:13px;opacity:.92}
+.rest .l b{font-size:15px;font-weight:800;opacity:1}
 .rest button{border-radius:12px;height:44px;padding:0 14px;font-weight:700;background:#fff;color:#2B45D9}
 .rest .plus{background:rgba(255,255,255,.18);color:#fff}
 .nophoto2{display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:var(--faint)}
@@ -256,6 +253,38 @@ ol.cues .n{width:20px;height:20px;border-radius:6px;background:var(--soft);font-
 
 .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(var(--tabh) + 16px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:999px;font-weight:600;font-size:14px;z-index:60;white-space:nowrap}
 @media (prefers-reduced-motion: reduce){.flip .b{animation-duration:4s}}
+/* shared */
+.pill.soft{background:var(--soft)}
+.row1{display:flex;justify-content:space-between;align-items:flex-end;gap:10px;flex:none}
+.nt{font-family:var(--font-display);font-weight:800;font-size:clamp(18px,2.6vh,22px);letter-spacing:-.01em;line-height:1.1}
+.th{position:relative;border-radius:12px;overflow:hidden;background:var(--soft);aspect-ratio:1}
+.th .badge{left:4px;top:4px;min-width:18px;height:18px;font-size:10px;border-radius:6px}
+.th .nophoto2 span{display:none}
+
+/* A: calendar */
+.cal{flex:1;min-height:0;display:flex;flex-direction:column;gap:6px;padding:10px 6px}
+.cal-h{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));text-align:center;font-size:11px;font-weight:700;color:var(--faint);flex:none}
+.cal-h .tr{color:var(--ink)}
+.cal-g{flex:1;min-height:0;display:grid;grid-template-columns:repeat(7,minmax(0,1fr));grid-template-rows:repeat(5,minmax(0,1fr));gap:4px 0}
+.c{position:relative;display:flex;align-items:center;justify-content:center;border-radius:12px;font-weight:700;font-size:14px}
+.c span{display:flex;align-items:center;justify-content:center;width:min(46px,94%);aspect-ratio:1;border-radius:50%}
+.c.off,.c.pre{color:var(--faint);font-weight:500}
+.c.off span,.c.pre span{width:auto}
+.c.done span{background:var(--ink);color:var(--accent)}
+.c.missed span,.c.moved span{border:1.5px dashed var(--faint);color:var(--muted)}
+.c.today span{background:var(--accent);color:var(--accent-ink);box-shadow:0 0 0 2px var(--ink)}
+.c.planned span{background:var(--blue-soft);color:var(--blue)}
+.c.new span{background:var(--ink);color:var(--accent)}
+.c.is-today:not(.today) span{box-shadow:0 0 0 2px var(--ink)}
+.c .mo{position:absolute;top:0;left:3px;font-style:normal;font-size:9.5px;font-weight:800;color:var(--blue);text-transform:uppercase}
+.c .nw{position:absolute;bottom:-1px;font-size:9px;font-weight:800;text-transform:uppercase;background:var(--accent);color:var(--accent-ink);border-radius:5px;padding:0 4px}
+.cal-l{display:flex;justify-content:center;gap:12px;font-size:11.5px;font-weight:600;color:var(--muted);flex:none}
+.cal-l span{display:flex;align-items:center;gap:5px}
+.lg{width:11px;height:11px;border-radius:50%;display:inline-block}
+.lg.done{background:var(--ink)} .lg.missed{border:1.5px dashed var(--faint)} .lg.today{background:var(--accent);box-shadow:0 0 0 1.5px var(--ink)} .lg.planned{background:var(--blue-soft);box-shadow:inset 0 0 0 1.5px var(--blue)}
+.nextc{flex:none;background:var(--surface);border-radius:18px;padding:12px 14px;display:flex;flex-direction:column;gap:10px}
+.nextc .thumbs{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px}
+
 </style>
 </head>
 <body>
@@ -639,36 +668,45 @@ function viewToday(){
   return h;
 }
 
-function viewPlan(){
-  var t=today(),n=count(),m=curMonth(),st=todayStatus();
-  var h='<div class="top"><div><div class="sub">Every Tuesday and Friday</div><h1>Plan</h1></div></div>';
-  h+='<div class="card" style="flex:none;display:flex;flex-direction:column;gap:8px"><div style="display:flex;justify-content:space-between;font-size:13px;font-weight:700"><span>Month '+m+'</span><span class="muted" style="font-weight:600">'+(n%PER_MONTH)+' of '+PER_MONTH+' sessions done</span></div><div class="bar">';
-  for(var i=0;i<PER_MONTH;i++)h+='<span class="'+(i<n%PER_MONTH?"on":i===n%PER_MONTH?"now":"")+'"></span>';
-  h+='</div><div class="small muted">Every 8 sessions you get new exercises.</div></div>';
-  var from=add(t,-14);if(from<S.startedAt)from=S.startedAt;
-  var past=[],future=[],proj=n;
+/* ---------- Plan: shared projection ---------- */
+function planDays(from,to){
+  var t=today(),st=todayStatus(),proj=count(),out=[];
   timeline(from,t).forEach(function(x){
-    if(x.state==="done")x.sessions.forEach(function(s){past.push(dayRow(x.date,"done","Session "+((s.n-1)%PER_MONTH+1)+" · month "+s.month,(s.date!==x.date?"Done on "+DOW[dow(s.date)]+" · ":"")+Math.round(s.secs/60)+" min"+(s.short?" · short":s.partial?" · ended early":""),"Done"))});
-    else if(x.state==="missed")past.push(dayRow(x.date,"missed","Skipped","Not caught up","Missed"));
-    else if(x.state==="open"&&x.date<t)past.push(dayRow(x.date,"missed",'<span class="strike">Session '+inMonth()+'</span>',"Moved to today","Moved"));
+    if(x.state==="done")x.sessions.forEach(function(s){out.push({date:x.date,kind:"done",n:(s.n-1)%PER_MONTH+1,month:s.month,mins:Math.round(s.secs/60)})});
+    else if(x.state==="missed")out.push({date:x.date,kind:"missed"});
+    else if(x.state==="open"&&x.date<t)out.push({date:x.date,kind:"moved"});
   });
-  if(st.kind==="catchup"||st.kind==="first"||st.kind==="due"){future.push(dayRow(t,"today","Session "+inMonth()+" · month "+m,"Today","Today"));proj++}
-  var d=nextTrain(t),k=0;
-  while(k<6){
-    var sm=monthOf(proj),si=proj%PER_MONTH+1,isNew=si===1&&proj>0;
-    future.push(dayRow(d,"planned",isNew?"Month "+sm+" starts":"Session "+si+" · month "+sm,isNew?"New exercises":estMinutes(lineupFor(sm),SETS)+" min",isNew?"New":"Planned"));
-    proj++;k++;d=nextTrain(d);
+  if(st.kind==="catchup"||st.kind==="first"||st.kind==="due"){out.push({date:t,kind:"today",n:inMonth(),month:curMonth(),mins:estMinutes(lineupFor(curMonth()),SETS)});proj++}
+  var d=nextTrain(t);
+  while(d<=to){var sm=monthOf(proj),si=proj%PER_MONTH+1;out.push({date:d,kind:"planned",n:si,month:sm,isNew:si===1&&proj>0,mins:estMinutes(lineupFor(sm),SETS)});proj++;d=nextTrain(d)}
+  return out;
+}
+function nextUp(){var a=planDays(today(),add(today(),14)).filter(function(x){return x.kind==="today"||x.kind==="planned"});return a[0]}
+var CHECK='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
+
+
+/* ---------- Plan: calendar ---------- */
+function viewPlan(){
+  var t=today(),m=curMonth(),n=count()%PER_MONTH;
+  var d0=parse(add(t,-14)),k=(d0.getDay()+6)%7;d0.setDate(d0.getDate()-k);var start=iso(d0),end=add(start,34);
+  var map={};planDays(add(start,-1)<S.startedAt?S.startedAt:start,end).forEach(function(x){map[x.date]=map[x.date]||x});
+  var h='<div class="top"><div><div class="sub">Every Tuesday and Friday</div><h1>Plan</h1></div><span class="pill">Month '+m+' · '+n+'/'+PER_MONTH+'</span></div>';
+  h+='<div class="cal card"><div class="cal-h">'+["M","T","W","T","F","S","S"].map(function(x,i){return '<span'+(i===1||i===4?' class="tr"':'')+'>'+x+'</span>'}).join("")+'</div><div class="cal-g">';
+  for(var i=0;i<35;i++){
+    var d=add(start,i),x=map[d],dd=parse(d),cls="c",inner=dd.getDate(),mo=dd.getDate()===1?'<i class="mo">'+MON[dd.getMonth()]+'</i>':'';
+    if(x){cls+=" "+x.kind+(x.isNew?" new":"");if(x.kind==="done")inner=CHECK;}
+    else if(isTrain(d)&&d<S.startedAt)cls+=" pre";
+    else if(!isTrain(d))cls+=" off";
+    if(d===t)cls+=" is-today";
+    h+='<div class="'+cls+'">'+mo+'<span>'+inner+'</span>'+(x&&x.isNew?'<b class="nw">new</b>':'')+'</div>';
   }
-  var max=tallScreen()?6:4,showPast=Math.min(past.length,2),rows=past.slice(past.length-showPast).concat(future).slice(0,max);
-  h+='<div class="list">'+rows.join("")+'</div>';
-  h+='<div style="flex:1"></div>'+strip(I.info,'<b>Missed a day?</b> It waits for you until the next training day. Never two in one day.');
+  h+='</div><div class="cal-l"><span><i class="lg done"></i>Done</span><span><i class="lg missed"></i>Skipped</span><span><i class="lg today"></i>Today</span><span><i class="lg planned"></i>Planned</span></div></div>';
+  var nx=nextUp(),lu=lineupFor(nx.month);
+  h+='<div class="nextc"><div class="row1"><div><div class="eyebrow">Next session</div><div class="nt">'+(nx.kind==="today"?"Today":nice(nx.date))+'</div></div><span class="pill soft">'+nx.mins+' min</span></div><div class="thumbs">'+lu.map(function(it){return '<div class="th">'+photo(EX[it.ex].photo,"","start")+'<span class="badge">'+it.slot+'</span></div>'}).join("")+'</div></div>';
   return h;
 }
+
 function lineupFor(m){return SLOTS.map(function(s){var id=exFor(s.id,m);return {slot:s.id,ex:id,dose:dose(s.id,id,false)}})}
-function dayRow(date,kind,title,sub,tag){
-  var d=parse(date),tcls=kind==="planned"?(tag==="New"?"new":"plan"):"";
-  return '<div class="day"><div class="date '+(kind==="planned"?"":kind)+'"><span class="w">'+DOW[d.getDay()]+'</span><span class="n">'+d.getDate()+'</span></div><div class="grow"><div class="one" style="font-weight:700">'+title+'</div><div class="small muted one">'+esc(sub)+'</div></div><span class="status '+tcls+'">'+tag+'</span></div>';
-}
 
 function viewProgress(){
   var n=count(),secs=S.log.reduce(function(a,s){return a+(s.secs||0)},0),t=today(),m=curMonth();
@@ -827,6 +865,12 @@ function setKg(it,val){
   var inp=document.getElementById("kg-input");if(inp)inp.value=kgVal(it.curKg);
   if(it.curKg>0){var u=document.querySelector(".wrow .use");if(u){u.remove();var l=document.getElementById("kg-lab");if(l)l.innerHTML='<b>Weight</b>'+(EX[it.ex].start?EX[it.ex].start[2]:"")}}
 }
+function restKg(it){
+  var e=EX[it.ex],same=P.set>1;
+  if(!e.start)return same?"Rest. Breathe.":"Next: <b>no weight needed</b>";
+  if(it.curKg>0)return (same?"Same weight: ":"Get ready: ")+"<b>"+fmtKg(it.curKg)+"</b> · "+esc(e.start[2]);
+  return "Get ready: <b>"+e.start[0]+"–"+e.start[1]+" kg</b> · "+esc(e.start[2]);
+}
 function renderPlayer(){
   if(!P)return;
   if(P.phase==="done")return renderDone();
@@ -852,7 +896,7 @@ function renderPlayer(){
       (e.start?kgRow(it):'');
     if(P.phase==="rest"){
       body+='<div class="pnext"><span class="one">Up next: '+esc(e.name)+', set '+P.set+'</span></div>'+
-        '<div class="rest" role="timer"><div><div class="l">Rest. Breathe.</div><div class="v" id="p-count">'+mmss(remaining())+'</div></div><div style="display:flex;gap:6px"><button class="plus" data-act="plus" aria-label="Add 15 seconds">+15</button><button data-act="skiprest">Skip</button></div></div>';
+        '<div class="rest" role="timer"><div class="grow"><div class="l one">'+restKg(it)+'</div><div class="v" id="p-count">'+mmss(remaining())+'</div></div><div style="display:flex;gap:6px"><button class="plus" data-act="plus" aria-label="Add 15 seconds">+15</button><button data-act="skiprest">Skip</button></div></div>';
     }else{
       var nxt=P.set<P.sets?"Then rest, set "+(P.set+1):P.i<P.items.length-1?"Next: "+EX[P.items[P.i+1].ex].name:"Last set!";
       body+='<div class="pnext"><span class="one">'+esc(nxt)+'</span>'+(!it.easier?'<button class="linkbtn" data-act="easier">Too hard? 2 fewer</button>':'<span>Made easier</span>')+'</div>'+
@@ -966,7 +1010,7 @@ document.addEventListener("wheel",function(e){if(e.ctrlKey)e.preventDefault()},{
 var rsz=null;window.addEventListener("resize",function(){clearTimeout(rsz);rsz=setTimeout(function(){if(!P&&!layer.innerHTML)render()},150)});
 
 render();
-var APP_VERSION = "2026.11.19-5";
+var APP_VERSION = "2026.11.20-1";
 var updateWaiting = false;
 function checkForUpdate(){
   if(!navigator.onLine)return;
