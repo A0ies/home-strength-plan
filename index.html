@@ -267,7 +267,7 @@ ol.cues .n{width:20px;height:20px;border-radius:6px;background:var(--soft);font-
 .cal-h .tr{color:var(--ink)}
 .cal-g{flex:1;min-height:0;display:grid;grid-template-columns:repeat(7,minmax(0,1fr));grid-template-rows:repeat(5,minmax(0,1fr));gap:4px 0}
 .c{position:relative;display:flex;align-items:center;justify-content:center;border-radius:12px;font-weight:700;font-size:14px}
-.c span{display:flex;align-items:center;justify-content:center;width:min(46px,94%);aspect-ratio:1;border-radius:50%}
+.c span{display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1;width:min(46px,94%);aspect-ratio:1;border-radius:50%}
 .c.off,.c.pre{color:var(--faint);font-weight:500}
 .c.off span,.c.pre span{width:auto}
 .c.done span{background:var(--ink);color:var(--accent)}
@@ -276,8 +276,8 @@ ol.cues .n{width:20px;height:20px;border-radius:6px;background:var(--soft);font-
 .c.planned span{background:var(--blue-soft);color:var(--blue)}
 .c.new span{background:var(--ink);color:var(--accent)}
 .c.is-today:not(.today) span{box-shadow:0 0 0 2px var(--ink)}
-.c .mo{position:absolute;top:0;left:3px;font-style:normal;font-size:9.5px;font-weight:800;color:var(--blue);text-transform:uppercase}
-.c .nw{position:absolute;bottom:-1px;font-size:9px;font-weight:800;text-transform:uppercase;background:var(--accent);color:var(--accent-ink);border-radius:5px;padding:0 4px}
+.c .mo{font-style:normal;font-size:9px;font-weight:800;color:var(--blue);text-transform:uppercase;line-height:1;margin-bottom:2px}
+.c .nw{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.02em;color:var(--accent)}
 .cal-l{display:flex;justify-content:center;gap:12px;font-size:11.5px;font-weight:600;color:var(--muted);flex:none}
 .cal-l span{display:flex;align-items:center;gap:5px}
 .lg{width:11px;height:11px;border-radius:50%;display:inline-block}
@@ -698,7 +698,8 @@ function viewPlan(){
     else if(isTrain(d)&&d<S.startedAt)cls+=" pre";
     else if(!isTrain(d))cls+=" off";
     if(d===t)cls+=" is-today";
-    h+='<div class="'+cls+'">'+mo+'<span>'+inner+'</span>'+(x&&x.isNew?'<b class="nw">new</b>':'')+'</div>';
+    if(x&&x.isNew)inner='<b class="nw">New</b>';
+    h+='<div class="'+cls+'"><span>'+mo+inner+'</span></div>';
   }
   h+='</div><div class="cal-l"><span><i class="lg done"></i>Done</span><span><i class="lg missed"></i>Skipped</span><span><i class="lg today"></i>Today</span><span><i class="lg planned"></i>Planned</span></div></div>';
   var nx=nextUp(),lu=lineupFor(nx.month);
@@ -1010,7 +1011,7 @@ document.addEventListener("wheel",function(e){if(e.ctrlKey)e.preventDefault()},{
 var rsz=null;window.addEventListener("resize",function(){clearTimeout(rsz);rsz=setTimeout(function(){if(!P&&!layer.innerHTML)render()},150)});
 
 render();
-var APP_VERSION = "2026.11.20-1";
+var APP_VERSION = "2026.11.20-2";
 var updateWaiting = false;
 function checkForUpdate(){
   if(!navigator.onLine)return;
